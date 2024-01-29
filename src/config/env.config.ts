@@ -8,4 +8,6 @@ export const ENV: Environment = {
   SMTP_PASSWORD: process.env.SMTP_PASSWORD!,
   PORT: +process.env.PORT!,
   SMTP_USERNAME: process.env.SMTP_USERNAME!,
+  SMTP_PORT: +process.env.SMTP_PORT!,
+  SMTP_SERVICE: process.env.SMTP_SERVICE!,
 };
