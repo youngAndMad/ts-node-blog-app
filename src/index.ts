@@ -1,10 +1,11 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
+import { ENV } from "./config/env.config";
 
 dotenv.config();
 
 const app: Express = express();
-const port = process.env.PORT || 3000;
+const port = ENV.PORT;
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Express +dewfr  Server");
