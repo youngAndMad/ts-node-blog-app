@@ -7,6 +7,9 @@ CREATE TABLE "User" (
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "username" TEXT NOT NULL,
+    "otp" INTEGER NOT NULL,
+    "emailVerified" BOOLEAN NOT NULL,
+    "otpSentTime" BOOLEAN NOT NULL,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );

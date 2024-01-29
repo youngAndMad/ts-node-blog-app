@@ -4,6 +4,6 @@ export type Environment = {
   SMTP_USERNAME: string;
   SMTP_SERVICE: string;
   SMTP_PORT: number;
-  SMTP_PASSWORD: string;
+  SMTP_PASS: string;
   DB_URL: string;
 };
