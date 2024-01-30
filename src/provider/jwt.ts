@@ -31,7 +31,7 @@ export function verifyToken(
 const getSecretByType = (type: TokenType): string =>
   type === TokenType.ACCESS ? ENV.JWT_SECRET : ENV.JWT_PRIVATE_SECRET;
 
-const getExpirationByType = (type: TokenType): string =>
+export const getExpirationByType = (type: TokenType): string =>
   type === TokenType.ACCESS
     ? ENV.ACCESS_TOKEN_EXPIRATION
     : ENV.REFRESH_TOKEN_EXPIRATION;

@@ -3,9 +3,11 @@ import logger from "./provider/logger";
 import { ENV } from "./config/env.config";
 import prisma from "./config/prisma.config";
 import userRouter from "./router/user.router";
+import requestLoggerMiddleware from "./middleware/logging.middleware";
 
 const app: Express = express();
 app.use(json());
+app.use(requestLoggerMiddleware);
 const port = ENV.PORT;
 
 async function main() {
