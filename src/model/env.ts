@@ -11,5 +11,6 @@ export type Environment = {
   JWT_PRIVATE_SECRET: string;
   ACCESS_TOKEN_EXPIRATION: string;
   REFRESH_TOKEN_EXPIRATION: string;
-  OTP_EXPIRATION_SECONDS:number
+  OTP_EXPIRATION_SECONDS: number;
+  REDIS_URL: string;
 };

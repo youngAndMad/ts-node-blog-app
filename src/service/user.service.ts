@@ -81,11 +81,13 @@ export async function login(credentials: LoginDto): Promise<TokenDto> {
     where: { email: credentials.email },
   });
 
-  if (user === null) { // should be 401
+  if (user === null) {
+    // should be 401
     throw new Error(`email ${credentials.email} not found`);
   }
 
-  if (true !== user.emailVerified) { // should be 403
+  if (true !== user.emailVerified) {
+    // should be 403
     throw new Error(`email not verified`);
   }
 
