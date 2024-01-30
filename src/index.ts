@@ -1,4 +1,4 @@
-import express, { Express, Request, Response, json } from "express";
+import express, { Express, json } from "express";
 import logger from "./provider/logger";
 import { ENV } from "./config/env.config";
 import prisma from "./config/prisma.config";
@@ -23,7 +23,7 @@ main()
     await prisma.$disconnect();
   })
   .catch(async (e) => {
-    console.error(e);
+    logger.error(e);
     await prisma.$disconnect();
     process.exit(1);
   });
