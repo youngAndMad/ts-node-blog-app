@@ -9,10 +9,10 @@ const logLevels = {
   trace: 5,
 };
 
-const logger = createLogger({
+const log = createLogger({
   levels: logLevels,
   format: format.combine(format.timestamp(), format.json()),
   transports: [new transports.Console()],
 });
 
-export default logger;
+export default log;

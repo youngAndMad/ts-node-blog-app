@@ -1,3 +1,4 @@
+import { emailConfirmationValidationRules } from "./../model/dto/confirm-email.dto";
 import { sendGreeting, sendOtp } from "./mail.service";
 import prisma from "../config/prisma.config";
 import { RegistrationDto } from "../model/dto/registration.dto";
@@ -7,6 +8,8 @@ import { ENV } from "../config/env.config";
 import { TokenDto } from "../model/dto/token.dto";
 import { generateToken, getExpirationByType } from "../provider/jwt";
 import { TokenType } from "../model/enum/token-type";
+import { hashPassword, comparePassword } from "../provider/encrypt";
+import { LoginDto } from "../model/dto/login.dto";
 
 export async function register(
   registrationDto: RegistrationDto
@@ -26,7 +29,7 @@ export async function register(
     const createdUser = await prisma.user.create({
       data: {
         email: registrationDto.email,
-        password: registrationDto.password, // todo: encrypt
+        password: await hashPassword(registrationDto.password),
         username: registrationDto.username,
         emailVerified: false,
         otp: otp,
@@ -70,12 +73,27 @@ export async function confirmEmail(
 
   sendGreeting(user.email);
 
-  return {
-    accessToken: generateToken(TokenType.ACCESS, user.email),
-    accessTokenExpiration: getExpirationByType(TokenType.ACCESS),
-    refreshToken: generateToken(TokenType.REFRESH, user.email),
-    refreshTokenExpiration: getExpirationByType(TokenType.REFRESH),
-  };
+  return generateTokens(user);
+}
+
+export async function login(credentials: LoginDto): Promise<TokenDto> {
+  const user = await prisma.user.findFirst({
+    where: { email: credentials.email },
+  });
+
+  if (user === null) { // should be 401
+    throw new Error(`email ${credentials.email} not found`);
+  }
+
+  if (true !== user.emailVerified) { // should be 403
+    throw new Error(`email not verified`);
+  }
+
+  if (!(await comparePassword(credentials.password, user.password))) {
+    throw new Error(`Invalid credentials`); // should be 403
+  }
+
+  return generateTokens(user);
 }
 
 const generateOtp = (): number => {
@@ -85,4 +103,13 @@ const generateOtp = (): number => {
   const otp = Math.floor(Math.random() * (max - min + 1)) + min;
 
   return otp;
+};
+
+const generateTokens = (user: User): TokenDto => {
+  return {
+    accessToken: generateToken(TokenType.ACCESS, user.email),
+    accessTokenExpiration: getExpirationByType(TokenType.ACCESS),
+    refreshToken: generateToken(TokenType.REFRESH, user.email),
+    refreshTokenExpiration: getExpirationByType(TokenType.REFRESH),
+  };
 };
