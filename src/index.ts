@@ -1,18 +1,20 @@
-import express, { Express, Request, Response } from "express";
+import express, { Express, Request, Response, json } from "express";
+import logger from "./provider/logger";
 import { ENV } from "./config/env.config";
 import prisma from "./config/prisma.config";
+import userRouter from "./router/user.router";
 
 const app: Express = express();
+app.use(json());
 const port = ENV.PORT;
 
 async function main() {
   console.table(ENV);
-  app.get("/", (req: Request, res: Response) => {
-    res.send("Express +dewfr  Server");
-  });
+
+  app.use(userRouter);
 
   app.listen(port, () => {
-    console.log(`[server]: Server is running at http://localhost:${port}`);
+    logger.info(`[server]: Server is running at http://localhost:${port}`);
   });
 }
 
