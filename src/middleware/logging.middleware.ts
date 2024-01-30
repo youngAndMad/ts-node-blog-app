@@ -6,8 +6,7 @@ const requestLoggerMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
-  const start = new Date();
-  logger.info(`[${start.toISOString()}] ${req.method} ${req.url}`, {
+  logger.info(`http method exec ${req.method} ${req.url}`, {
     requestHeaders: req.headers,
     requestBody: req.body,
   });

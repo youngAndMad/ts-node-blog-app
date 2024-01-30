@@ -7,4 +7,8 @@ export type Environment = {
   SMTP_PASS: string;
   DB_URL: string;
   EMAIL_SENDER: string;
+  JWT_SECRET: string;
+  JWT_PRIVATE_SECRET: string;
+  ACCESS_TOKEN_EXPIRATION: string;
+  REFRESH_TOKEN_EXPIRATION: string;
 };
