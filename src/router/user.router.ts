@@ -24,8 +24,8 @@ userRouter.post(
       async () => {
         const { email, username, password } = req.body;
         try {
-          const user = await register({ email, username, password });
-          res.status(201).json(user);
+          const response = await register({ email, username, password });
+          res.status(201).json(response);
         } catch (err: any) {
           log.error(err.message);
           res.status(405).json({ error: err.message });

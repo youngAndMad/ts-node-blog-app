@@ -17,7 +17,7 @@ import { LoginDto } from "../model/dto/login.dto";
 
 export async function register(
   registrationDto: RegistrationDto
-): Promise<User> {
+): Promise<Boolean> {
   try {
     const user = await prisma.user.findUnique({
       where: { email: registrationDto.email },
@@ -30,7 +30,7 @@ export async function register(
     const otp = generateOtp();
     const otpSentTime = sendOtp(otp, registrationDto.email);
 
-    const createdUser = await prisma.user.create({
+    await prisma.user.create({
       data: {
         email: registrationDto.email,
         password: await hashPassword(registrationDto.password),
@@ -41,7 +41,7 @@ export async function register(
       },
     });
 
-    return createdUser;
+    return true;
   } catch (error) {
     return Promise.reject(error);
   }
