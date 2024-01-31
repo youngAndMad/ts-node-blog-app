@@ -1,10 +1,10 @@
-import { error } from "console";
 import express, { Request, Response } from "express";
 import {
   register,
   confirmEmail,
   login,
   refreshToken,
+  getAllUsers,
 } from "../service/user.service";
 import { registrationValidationRules } from "../model/dto/registration.dto";
 import { emailConfirmationValidationRules } from "../model/dto/confirm-email.dto";
@@ -96,5 +96,9 @@ userRouter.post(
     }
   }
 );
+
+userRouter.get("api/v1/user/admin/all", async (req: Request, res: Response) => {
+  res.json(await getAllUsers());
+});
 
 export default userRouter;

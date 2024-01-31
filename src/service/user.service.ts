@@ -116,6 +116,10 @@ export async function refreshToken(refreshToken: string): Promise<TokenDto> {
   }
 }
 
+export async function getAllUsers(): Promise<User[]> {
+  return prisma.user.findMany();
+}
+
 const generateOtp = (): number => {
   const min = 100000;
   const max = 999999;
