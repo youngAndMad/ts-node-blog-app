@@ -18,13 +18,15 @@ export function generateToken(
   return token;
 }
 
-export function verifyToken(
-  token: string,
-  type: TokenType,
-  callback: (err: any, decoded: any) => void
-): void {
-  jwt.verify(token, getSecretByType(type), (err, decoded) => {
-    callback(err, decoded);
+export function verifyToken(token: string, type: TokenType): Promise<any> {
+  return new Promise((resolve, reject) => {
+    jwt.verify(token, getSecretByType(type), (err, decoded) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(decoded);
+      }
+    });
   });
 }
 

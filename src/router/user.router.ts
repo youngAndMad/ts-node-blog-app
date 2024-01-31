@@ -1,5 +1,11 @@
+import { error } from "console";
 import express, { Request, Response } from "express";
-import { register, confirmEmail, login } from "../service/user.service";
+import {
+  register,
+  confirmEmail,
+  login,
+  refreshToken,
+} from "../service/user.service";
 import { registrationValidationRules } from "../model/dto/registration.dto";
 import { emailConfirmationValidationRules } from "../model/dto/confirm-email.dto";
 import log from "../provider/logger";
@@ -66,11 +72,28 @@ userRouter.post(
           res.status(200).json(tokenDto);
         } catch (err: any) {
           log.error(err.message);
-          res.status(405).json({ error: err.message });
+          res.status(400).json({ error: err.message });
         }
       },
       loginValidationRules
     );
+  }
+);
+
+userRouter.post(
+  "/api/v1/user/refresh-token",
+  async (req: Request, res: Response) => {
+    const refreshTokenFromHeader = req.header("refresh-token");
+
+    if (refreshTokenFromHeader === undefined) {
+      res.status(400).json({ error: "refresh token not provided" });
+    }
+
+    try {
+      res.json(await refreshToken(refreshTokenFromHeader!));
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
   }
 );
 

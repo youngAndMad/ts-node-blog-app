@@ -6,7 +6,11 @@ import { User } from "@prisma/client";
 import { ConfirmEmailDto } from "../model/dto/confirm-email.dto";
 import { ENV } from "../config/env.config";
 import { TokenDto } from "../model/dto/token.dto";
-import { generateToken, getExpirationByType } from "../provider/jwt";
+import {
+  generateToken,
+  getExpirationByType,
+  verifyToken,
+} from "../provider/jwt";
 import { TokenType } from "../model/enum/token-type";
 import { hashPassword, comparePassword } from "../provider/encrypt";
 import { LoginDto } from "../model/dto/login.dto";
@@ -82,20 +86,34 @@ export async function login(credentials: LoginDto): Promise<TokenDto> {
   });
 
   if (user === null) {
-    // should be 401
     throw new Error(`email ${credentials.email} not found`);
   }
 
   if (true !== user.emailVerified) {
-    // should be 403
     throw new Error(`email not verified`);
   }
 
   if (!(await comparePassword(credentials.password, user.password))) {
-    throw new Error(`Invalid credentials`); // should be 403
+    throw new Error(`Invalid credentials`);
   }
 
   return generateTokens(user);
+}
+
+export async function refreshToken(refreshToken: string): Promise<TokenDto> {
+  try {
+    const decoded: any = await verifyToken(refreshToken, TokenType.REFRESH);
+    const email = decoded.user.email; // Assuming user object is present in decoded
+    const user = await prisma.user.findFirst({ where: { email: email } });
+
+    if (user === null) {
+      throw new Error("invalid credentials");
+    }
+
+    return generateTokens(user);
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
 }
 
 const generateOtp = (): number => {
