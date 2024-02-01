@@ -24,16 +24,9 @@ export function authTokenMiddleware(
     res.status(401).json({ message: "Invalid token type" });
   }
 
-  verifyToken(
-    token.substring("Bearer ".length),
-    TokenType.ACCESS,
-    (err, decoded) => {
-      // todo add user role validation
-      if (err != null) {
-        console.error(err);
-      } else {
-        console.log(decoded);
-      }
+  verifyToken(token.substring("Bearer ".length), TokenType.ACCESS).then(
+    (val) => {
+      console.log(val);
     }
   );
 

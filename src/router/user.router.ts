@@ -5,6 +5,8 @@ import {
   login,
   refreshToken,
   getAllUsers,
+  editUsername,
+  deleteUser,
 } from "../service/user.service";
 import { registrationValidationRules } from "../model/dto/registration.dto";
 import { emailConfirmationValidationRules } from "../model/dto/confirm-email.dto";
@@ -99,6 +101,17 @@ userRouter.post(
 
 userRouter.get("api/v1/user/admin/all", async (req: Request, res: Response) => {
   res.json(await getAllUsers());
+});
+
+userRouter.patch("/api/v1/user/:id", async (req: Request, res: Response) => {
+  const id = +req.params.id;
+  const username = req.query.username as string;
+  res.json(await editUsername(id, username));
+});
+
+userRouter.delete("/api/v1/user/:id", async (req: Request, res: Response) => {
+  await deleteUser(+req.params.id);
+  res.status(204);
 });
 
 export default userRouter;

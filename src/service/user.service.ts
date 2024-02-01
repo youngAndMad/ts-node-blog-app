@@ -130,6 +130,31 @@ export async function getAllUsers(): Promise<UserDto[]> {
   });
 }
 
+export async function editUsername(
+  id: number,
+  username: string
+): Promise<UserDto> {
+  const user = await prisma.user.findUnique({
+    where: {
+      id: id,
+    },
+  });
+
+  if (user === null) {
+    throw new Error(`user by id ${id} not found`);
+  }
+
+  return prisma.user.update({
+    where: { id: id },
+    data: { username: username },
+    select: { id: true, username: true, email: true },
+  });
+}
+
+export async function deleteUser(id: number) {
+  prisma.user.delete({ where: { id: id } });
+}
+
 const generateOtp = (): number => {
   const min = 100000;
   const max = 999999;
