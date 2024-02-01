@@ -19,6 +19,7 @@ model User {
   emailVerified Boolean
   otpSentTime   DateTime
   chats         Chat[]
+  imageUrl      String
 }
 
 model File {
