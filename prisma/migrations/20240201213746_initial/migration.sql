@@ -9,9 +9,18 @@ CREATE TABLE "User" (
     "username" TEXT NOT NULL,
     "otp" INTEGER NOT NULL,
     "emailVerified" BOOLEAN NOT NULL,
-    "otpSentTime" BOOLEAN NOT NULL,
+    "otpSentTime" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "UserProfileImage" (
+    "id" SERIAL NOT NULL,
+    "url" TEXT NOT NULL,
+    "userId" INTEGER NOT NULL,
+
+    CONSTRAINT "UserProfileImage_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -20,7 +29,7 @@ CREATE TABLE "File" (
     "extension" TEXT NOT NULL,
     "url" TEXT NOT NULL,
     "filaName" TEXT NOT NULL,
-    "messageId" INTEGER NOT NULL,
+    "messageId" INTEGER,
 
     CONSTRAINT "File_pkey" PRIMARY KEY ("id")
 );
@@ -55,13 +64,19 @@ CREATE TABLE "_ChatToUser" (
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "UserProfileImage_userId_key" ON "UserProfileImage"("userId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "_ChatToUser_AB_unique" ON "_ChatToUser"("A", "B");
 
 -- CreateIndex
 CREATE INDEX "_ChatToUser_B_index" ON "_ChatToUser"("B");
 
 -- AddForeignKey
-ALTER TABLE "File" ADD CONSTRAINT "File_messageId_fkey" FOREIGN KEY ("messageId") REFERENCES "Message"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "UserProfileImage" ADD CONSTRAINT "UserProfileImage_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "File" ADD CONSTRAINT "File_messageId_fkey" FOREIGN KEY ("messageId") REFERENCES "Message"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Message" ADD CONSTRAINT "Message_chatId_fkey" FOREIGN KEY ("chatId") REFERENCES "Chat"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -11,24 +11,31 @@ datasource db {
 }
 
 model User {
-  id            Int      @id @default(autoincrement())
-  email         String   @unique
+  id            Int               @id @default(autoincrement())
+  email         String            @unique
   password      String
   username      String
   otp           Int
   emailVerified Boolean
   otpSentTime   DateTime
   chats         Chat[]
-  imageUrl      String
+  profileImage  UserProfileImage?
+}
+
+model UserProfileImage {
+  id     Int    @id @default(autoincrement())
+  url    String
+  userId Int    @unique
+  user   User   @relation(fields: [userId], references: [id])
 }
 
 model File {
-  id        Int     @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   extension String
   url       String
   filaName  String
-  messageId Int
-  message   Message @relation(fields: [messageId], references: [id])
+  Message   Message? @relation(fields: [messageId], references: [id])
+  messageId Int?
 }
 
 enum ChatType {
