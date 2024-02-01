@@ -29,6 +29,7 @@
     "nodemailer": "^6.9.8",
     "redis": "^4.6.12"
   },
+
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",

@@ -50,7 +50,7 @@ userRouter.post(
           res.status(200).json(tokenDto);
         } catch (err: any) {
           log.error(err.message);
-          res.status(405).json({ error: err.message });
+          res.status(400).json({ error: err.message });
         }
       },
       emailConfirmationValidationRules

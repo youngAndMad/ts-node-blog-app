@@ -1,4 +1,3 @@
-import { emailConfirmationValidationRules } from "./../model/dto/confirm-email.dto";
 import { sendGreeting, sendOtp } from "./mail.service";
 import prisma from "../config/prisma.config";
 import { RegistrationDto } from "../model/dto/registration.dto";
@@ -14,10 +13,11 @@ import {
 import { TokenType } from "../model/enum/token-type";
 import { hashPassword, comparePassword } from "../provider/encrypt";
 import { LoginDto } from "../model/dto/login.dto";
+import { UserDto } from "../model/dto/user.dto";
 
 export async function register(
   registrationDto: RegistrationDto
-): Promise<Boolean> {
+): Promise<UserDto> {
   try {
     const user = await prisma.user.findUnique({
       where: { email: registrationDto.email },
@@ -30,7 +30,7 @@ export async function register(
     const otp = generateOtp();
     const otpSentTime = sendOtp(otp, registrationDto.email);
 
-    await prisma.user.create({
+    const registeredUser = await prisma.user.create({
       data: {
         email: registrationDto.email,
         password: await hashPassword(registrationDto.password),
@@ -41,7 +41,11 @@ export async function register(
       },
     });
 
-    return true;
+    return {
+      email: registeredUser.email,
+      id: registeredUser.id,
+      username: registeredUser.username,
+    };
   } catch (error) {
     return Promise.reject(error);
   }
@@ -116,8 +120,14 @@ export async function refreshToken(refreshToken: string): Promise<TokenDto> {
   }
 }
 
-export async function getAllUsers(): Promise<User[]> {
-  return prisma.user.findMany();
+export async function getAllUsers(): Promise<UserDto[]> {
+  return prisma.user.findMany({
+    select: {
+      id: true,
+      username: true,
+      email: true,
+    },
+  });
 }
 
 const generateOtp = (): number => {
