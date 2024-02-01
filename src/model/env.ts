@@ -13,4 +13,9 @@ export type Environment = {
   REFRESH_TOKEN_EXPIRATION: string;
   OTP_EXPIRATION_SECONDS: number;
   REDIS_URL: string;
+  MINIO_USE_SSL: boolean;
+  MINIO_ACCESS_KEY: string;
+  MINIO_SECRET_KEY: string;
+  MINIO_ENDPOINT: string;
+  MINIO_PORT: number;
 };
