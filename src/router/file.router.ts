@@ -13,13 +13,13 @@ fileRouter.post(
     const file = req.files.file as fileUpload.UploadedFile;
 
     const uploadedAvatar = await uploadUserAvatar(file, +req.params.userId);
-    res.json(uploadUserAvatar);
+    res.json(uploadedAvatar);
   }
 );
 
 fileRouter.get(
   "/api/v1/file/download/profile-image/:userId",
   async (req: Request, res: Response) => {
-    await downloadUserAvatar(+req.params.userId, res);
+    downloadUserAvatar(+req.params.userId, res);
   }
 );
