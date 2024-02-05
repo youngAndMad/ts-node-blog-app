@@ -155,6 +155,10 @@ export async function deleteUser(id: number) {
   prisma.user.delete({ where: { id: id } });
 }
 
+export async function findUser(id: number): Promise<User | null> {
+  return prisma.user.findFirst({ where: { id: id } });
+}
+
 const generateOtp = (): number => {
   const min = 100000;
   const max = 999999;

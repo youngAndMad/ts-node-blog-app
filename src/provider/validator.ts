@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { ValidationChain, validationResult } from "express-validator";
+import DataValidationError from "../model/error/data-validation.error";
 
 export async function validate(
   req: Request,
@@ -13,6 +14,5 @@ export async function validate(
   if (errors.isEmpty()) {
     return next();
   }
-
-  res.status(400).json({ errors: errors.array() });
+  throw new DataValidationError(errors);
 }
