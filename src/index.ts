@@ -1,8 +1,6 @@
-import express, { Express, json } from "express";
+import { json } from "express";
 import logger from "./provider/logger";
 import cors from "cors";
-import { Server } from "socket.io";
-import http from "http";
 import { ENV } from "./config/env.config";
 import prisma from "./config/prisma.config";
 import fileUpload from "express-fileupload";
@@ -32,6 +30,8 @@ main()
   })
   .catch(async (e) => {
     logger.error(e);
-    await prisma.$disconnect();
     process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
   });
