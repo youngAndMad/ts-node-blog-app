@@ -28,5 +28,4 @@ export async function deletePrivateChat(id: number) {
     throw new Error(`chat with id ${id} not found`);
   }
 
-  
 }

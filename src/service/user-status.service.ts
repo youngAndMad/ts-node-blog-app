@@ -21,15 +21,6 @@ export async function setOffline(userId: number) {
   }
 }
 
-export async function isOffline(userId: number) {
-  try {
-    const result = await redisClient.sIsMember(
-      ONLINE_USERS_SET,
-      userId.toString()
-    );
-    return !result;
-  } catch (error) {
-    log.error(`Error checking if user with ID ${userId} is offline: ${error}`);
-    return true; // Assuming an error means offline status
-  }
+export async function getAllOnlineUsers(): Promise<number[]> {
+  return (await redisClient.sMembers(ONLINE_USERS_SET)).map((s) => +s);
 }

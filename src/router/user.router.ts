@@ -8,6 +8,7 @@ import {
   editUsername,
   deleteUser,
 } from "../service/user.service";
+// import { isOnline } from "../service/user-status.service";
 import { registrationValidationRules } from "../model/dto/registration.dto";
 import { emailConfirmationValidationRules } from "../model/dto/confirm-email.dto";
 import log from "../provider/logger";
@@ -113,5 +114,13 @@ userRouter.delete("/api/v1/user/:id", async (req: Request, res: Response) => {
   await deleteUser(+req.params.id);
   res.status(204);
 });
+
+// userRouter.get(
+//   "/api/v1/user/status/:id",
+//   async (req: Request, res: Response) => {
+//     const result = await isOnline(+req.query.id!);
+//     res.json({ online: result });
+//   }
+// );
 
 export default userRouter;
