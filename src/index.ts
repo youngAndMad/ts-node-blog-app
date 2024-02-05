@@ -8,9 +8,7 @@ import prisma from "./config/prisma.config";
 import fileUpload from "express-fileupload";
 import userRouter from "./router/user.router";
 import requestLoggerMiddleware from "./middleware/logging.middleware";
-import { app, server, io } from "./provider/socket";
-
-const userSocketMap = new Map<string, any>(); // {userId: socketId}
+import { app, server } from "./provider/socket";
 
 app.use(json());
 app.use(fileUpload());
