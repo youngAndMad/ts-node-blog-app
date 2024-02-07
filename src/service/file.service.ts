@@ -7,6 +7,7 @@ import { Response } from "express";
 import NotFoundError from "../model/error/not-found.error";
 
 const USER_PROFILE_IMAGE_BUCKET = "user_profile_image_node";
+const MESSAGE_CONTENT_BUCKET = "message_content";
 
 export async function uploadUserAvatar(
   file: UploadedFile,
@@ -27,6 +28,20 @@ export async function uploadUserAvatar(
   });
 }
 
+export async function uploadImage(
+  messageId: number,
+  file: UploadedFile
+): Promise<number> {
+  await minioClient.putObject(
+    USER_PROFILE_IMAGE_BUCKET,
+    `${messageId}.${getFileExtension(file)}`,
+    file.data
+  );
+
+  return 1; //todo implement
+}
+
+
 export async function downloadUserAvatar(
   userId: number,
   res: Response
@@ -34,9 +49,11 @@ export async function downloadUserAvatar(
   const userProfileImage = await prisma.userProfileImage.findFirst({
     where: { userId: userId },
   });
+
   if (userProfileImage === null) {
     throw new NotFoundError("user profile", userId);
   }
+
   let fileName = userProfileImage?.url.substring(
     userProfileImage.url.lastIndexOf("/")
   );

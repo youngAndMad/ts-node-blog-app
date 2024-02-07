@@ -29,15 +29,6 @@ model UserProfileImage {
   user   User   @relation(fields: [userId], references: [id])
 }
 
-model File {
-  id        Int      @id @default(autoincrement())
-  extension String
-  url       String
-  filaName  String
-  Message   Message? @relation(fields: [messageId], references: [id])
-  messageId Int?
-}
-
 enum ChatType {
   PRIVATE
   GROUP
@@ -55,7 +46,6 @@ model Message {
   id       Int      @id @default(autoincrement())
   chatId   Int
   chat     Chat     @relation(fields: [chatId], references: [id])
-  files    File[]
   content  String
   sentTime DateTime
   userId   Int

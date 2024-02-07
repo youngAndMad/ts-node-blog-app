@@ -2,15 +2,16 @@
   "name": "ts-node-blog-app",
   "version": "1.0.0",
   "description": "danekerscode sila",
-  "main": "src/index.js",
+  "main": "src/index.ts",
   "scripts": {
+    "generate": "npx prisma generate",
     "build": "npx tsc",
     "start": "node dist/index.js",
     "dev": "nodemon src/index.ts",
     "prisma": "npx prisma studio"
   },
   "keywords": [],
-  "author": "",
+  "author": "Daneker Kaliaskaruly",
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^5.8.1",
