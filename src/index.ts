@@ -18,25 +18,20 @@ app.use(requestLoggerMiddleware);
 app.use((err: BaseError, req: Request, res: Response, next: NextFunction) => {
   return res.status(err.statusCode).json(err);
 });
+app.use("/api/v1/user/", userRouter);
+app.use("/api/v1/chat/", chatRouter);
+app.use("/api/v1/file/", fileRouter);
 
 const port = ENV.PORT;
 
 async function main() {
   console.table(ENV);
-
-  app.use("/api/v1/user/", userRouter);
-  app.use("/api/v1/chat/", chatRouter);
-  app.use("/api/v1/file/", fileRouter);
-
   server.listen(port, () => {
     logger.info(`[server]: Server is running at :${port}`);
   });
 }
 
 main()
-  .then(async () => {
-    await prisma.$disconnect();
-  })
   .catch(async (e) => {
     logger.error(e);
     process.exit(1);

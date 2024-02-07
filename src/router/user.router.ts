@@ -16,7 +16,7 @@ import { loginValidationRules } from "../model/dto/login.dto";
 let userRouter = express.Router();
 
 userRouter.post(
-  "register",
+  "/register",
   registrationValidationRules,
   async (req: Request, res: Response) => {
     await validate(
@@ -33,7 +33,7 @@ userRouter.post(
 );
 
 userRouter.post(
-  "confirm-email",
+  "/confirm-email",
   emailConfirmationValidationRules,
   async (req: Request, res: Response) => {
     await validate(
@@ -50,7 +50,7 @@ userRouter.post(
 );
 
 userRouter.post(
-  "login",
+  "/login",
   loginValidationRules,
   async (req: Request, res: Response) => {
     await validate(
@@ -66,7 +66,7 @@ userRouter.post(
   }
 );
 
-userRouter.post("refresh-token", async (req: Request, res: Response) => {
+userRouter.post("/refresh-token", async (req: Request, res: Response) => {
   const refreshTokenFromHeader = req.header("refresh-token");
 
   if (refreshTokenFromHeader === undefined) {
@@ -75,17 +75,17 @@ userRouter.post("refresh-token", async (req: Request, res: Response) => {
   res.json(await refreshToken(refreshTokenFromHeader!));
 });
 
-userRouter.get("api/v1/user/admin/all", async (req: Request, res: Response) => {
+userRouter.get("/admin/all", async (req: Request, res: Response) => {
   res.json(await getAllUsers());
 });
 
-userRouter.patch(":id", async (req: Request, res: Response) => {
+userRouter.patch("/:id", async (req: Request, res: Response) => {
   const id = +req.params.id;
   const username = req.query.username as string;
   res.json(await editUsername(id, username));
 });
 
-userRouter.delete(":id", async (req: Request, res: Response) => {
+userRouter.delete("/:id", async (req: Request, res: Response) => {
   await deleteUser(+req.params.id);
   res.status(204);
 });

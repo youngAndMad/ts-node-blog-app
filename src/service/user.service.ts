@@ -45,6 +45,7 @@ export async function register(
     email: registeredUser.email,
     id: registeredUser.id,
     username: registeredUser.username,
+    emailVerified: false,
   };
 }
 
@@ -123,6 +124,7 @@ export async function getAllUsers(): Promise<UserDto[]> {
       id: true,
       username: true,
       email: true,
+      emailVerified: true,
     },
   });
 }
@@ -144,7 +146,7 @@ export async function editUsername(
   return prisma.user.update({
     where: { id: id },
     data: { username: username },
-    select: { id: true, username: true, email: true },
+    select: { id: true, username: true, email: true, emailVerified: true },
   });
 }
 
