@@ -17,7 +17,7 @@ import { loginValidationRules } from "../model/dto/login.dto";
 let userRouter = express.Router();
 
 userRouter.post(
-  "/api/v1/user/register",
+  "register",
   registrationValidationRules,
   async (req: Request, res: Response) => {
     await validate(
@@ -39,7 +39,7 @@ userRouter.post(
 );
 
 userRouter.post(
-  "/api/v1/user/confirm-email",
+  "confirm-email",
   emailConfirmationValidationRules,
   async (req: Request, res: Response) => {
     await validate(
@@ -61,7 +61,7 @@ userRouter.post(
 );
 
 userRouter.post(
-  "/api/v1/user/login",
+  "login",
   loginValidationRules,
   async (req: Request, res: Response) => {
     await validate(
@@ -83,7 +83,7 @@ userRouter.post(
 );
 
 userRouter.post(
-  "/api/v1/user/refresh-token",
+  "refresh-token",
   async (req: Request, res: Response) => {
     const refreshTokenFromHeader = req.header("refresh-token");
 
@@ -103,13 +103,13 @@ userRouter.get("api/v1/user/admin/all", async (req: Request, res: Response) => {
   res.json(await getAllUsers());
 });
 
-userRouter.patch("/api/v1/user/:id", async (req: Request, res: Response) => {
+userRouter.patch(":id", async (req: Request, res: Response) => {
   const id = +req.params.id;
   const username = req.query.username as string;
   res.json(await editUsername(id, username));
 });
 
-userRouter.delete("/api/v1/user/:id", async (req: Request, res: Response) => {
+userRouter.delete(":id", async (req: Request, res: Response) => {
   await deleteUser(+req.params.id);
   res.status(204);
 });

@@ -1,7 +1,10 @@
 import prisma from "../config/prisma.config";
 import { findUser } from "./user.service";
 
-export async function createPrivateChat(senderId: number, receiverId: number) {
+export async function createPrivateChat(
+  senderId: number,
+  receiverId: number
+): Promise<number> {
   const sender = await findUser(senderId)!;
   const receiver = await findUser(receiverId)!;
 
@@ -9,7 +12,7 @@ export async function createPrivateChat(senderId: number, receiverId: number) {
     throw new Error("error: sender or receiver is null");
   }
 
-  await prisma.chat.create({
+  const chat = await prisma.chat.create({
     data: {
       members: {
         connect: [{ id: sender.id }, { id: receiver.id }],
@@ -19,6 +22,8 @@ export async function createPrivateChat(senderId: number, receiverId: number) {
       type: "PRIVATE",
     },
   });
+
+  return chat.id;
 }
 
 export async function deletePrivateChat(id: number) {
@@ -27,5 +32,4 @@ export async function deletePrivateChat(id: number) {
   if (chat === null) {
     throw new Error(`chat with id ${id} not found`);
   }
-
 }

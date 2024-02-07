@@ -4,7 +4,7 @@ import fileUpload from "express-fileupload";
 const fileRouter = express.Router();
 
 fileRouter.post(
-  "/api/v1/file/upload/profile-image/:userId",
+  "upload/profile-image/:userId",
   async (req: Request, res: Response) => {
     if (!req.files || Object.keys(req.files).length === 0) {
       return res.status(400).send("No files were uploaded.");
@@ -18,8 +18,10 @@ fileRouter.post(
 );
 
 fileRouter.get(
-  "/api/v1/file/download/profile-image/:userId",
+  "download/profile-image/:userId",
   async (req: Request, res: Response) => {
     downloadUserAvatar(+req.params.userId, res);
   }
 );
+
+export default fileRouter;

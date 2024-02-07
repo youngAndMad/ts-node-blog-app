@@ -8,6 +8,8 @@ import userRouter from "./router/user.router";
 import requestLoggerMiddleware from "./middleware/logging.middleware";
 import { app, server } from "./provider/socket";
 import BaseError from "./model/error/base-error";
+import chatRouter from "./router/chat.router";
+import fileRouter from "./router/file.router";
 
 app.use(json());
 app.use(fileUpload());
@@ -22,7 +24,9 @@ const port = ENV.PORT;
 async function main() {
   console.table(ENV);
 
-  app.use(userRouter);
+  app.use("/api/v1/user/", userRouter);
+  app.use("/api/v1/chat/", chatRouter);
+  app.use("/api/v1/file/", fileRouter);
 
   server.listen(port, () => {
     logger.info(`[server]: Server is running at :${port}`);
