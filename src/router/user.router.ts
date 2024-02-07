@@ -72,12 +72,7 @@ userRouter.post("refresh-token", async (req: Request, res: Response) => {
   if (refreshTokenFromHeader === undefined) {
     res.status(400).json({ error: "refresh token not provided" });
   }
-
-  try {
-    res.json(await refreshToken(refreshTokenFromHeader!));
-  } catch (error: any) {
-    res.status(400).json({ error: error.message });
-  }
+  res.json(await refreshToken(refreshTokenFromHeader!));
 });
 
 userRouter.get("api/v1/user/admin/all", async (req: Request, res: Response) => {

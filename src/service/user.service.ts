@@ -14,41 +14,38 @@ import { TokenType } from "../model/enum/token-type";
 import { hashPassword, comparePassword } from "../provider/encrypt";
 import { LoginDto } from "../model/dto/login.dto";
 import { UserDto } from "../model/dto/user.dto";
+import EmailRegisteredYetError from "../model/error/email-registered-yet.error";
 
 export async function register(
   registrationDto: RegistrationDto
 ): Promise<UserDto> {
-  try {
-    const user = await prisma.user.findUnique({
-      where: { email: registrationDto.email },
-    });
+  const user = await prisma.user.findUnique({
+    where: { email: registrationDto.email },
+  });
 
-    if (user !== null) {
-      throw new Error(`email ${registrationDto.email} registered yet`);
-    }
-
-    const otp = generateOtp();
-    const otpSentTime = sendOtp(otp, registrationDto.email);
-
-    const registeredUser = await prisma.user.create({
-      data: {
-        email: registrationDto.email,
-        password: await hashPassword(registrationDto.password),
-        username: registrationDto.username,
-        emailVerified: false,
-        otp: otp,
-        otpSentTime: otpSentTime,
-      },
-    });
-
-    return {
-      email: registeredUser.email,
-      id: registeredUser.id,
-      username: registeredUser.username,
-    };
-  } catch (error) {
-    return Promise.reject(error);
+  if (user !== null) {
+    throw new EmailRegisteredYetError(registrationDto.email);
   }
+
+  const otp = generateOtp();
+  const otpSentTime = sendOtp(otp, registrationDto.email);
+
+  const registeredUser = await prisma.user.create({
+    data: {
+      email: registrationDto.email,
+      password: await hashPassword(registrationDto.password),
+      username: registrationDto.username,
+      emailVerified: false,
+      otp: otp,
+      otpSentTime: otpSentTime,
+    },
+  });
+
+  return {
+    email: registeredUser.email,
+    id: registeredUser.id,
+    username: registeredUser.username,
+  };
 }
 
 export async function confirmEmail(
@@ -170,9 +167,9 @@ const generateOtp = (): number => {
 
 const generateTokens = (user: User): TokenDto => {
   return {
-    accessToken: generateToken(TokenType.ACCESS, user.email),
+    accessToken: generateToken(TokenType.ACCESS, user.email, { id: user.id }),
     accessTokenExpiration: getExpirationByType(TokenType.ACCESS),
-    refreshToken: generateToken(TokenType.REFRESH, user.email),
+    refreshToken: generateToken(TokenType.REFRESH, user.email, { id: user.id }),
     refreshTokenExpiration: getExpirationByType(TokenType.REFRESH),
   };
 };

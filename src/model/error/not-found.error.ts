@@ -4,10 +4,9 @@ class NotFoundError extends BaseError {
   statusCode = 404; // Not found
   message: string;
 
-  constructor(entityClass: new () => any, entityId: string | number) {
+  constructor(entityClass: string, entityId: any) {
     super();
-    const className = entityClass.name || "UnknownClass";
-    this.message = `${className} with id ${entityId} not found`;
+    this.message = `${entityClass} with id ${entityId} not found`;
   }
 }
 

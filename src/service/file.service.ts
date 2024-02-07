@@ -3,8 +3,8 @@ import minioClient from "../config/minio.config";
 import log from "../provider/logger";
 import prisma from "../config/prisma.config";
 import { UploadedFile } from "express-fileupload";
-import { Readable } from "stream";
 import { Response } from "express";
+import NotFoundError from "../model/error/not-found.error";
 
 const USER_PROFILE_IMAGE_BUCKET = "user_profile_image_node";
 
@@ -35,7 +35,7 @@ export async function downloadUserAvatar(
     where: { userId: userId },
   });
   if (userProfileImage === null) {
-    throw new Error("user profile not found");
+    throw new NotFoundError("user profile", userId);
   }
   let fileName = userProfileImage?.url.substring(
     userProfileImage.url.lastIndexOf("/")

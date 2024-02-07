@@ -1,5 +1,7 @@
+import InvalidPayloadError from "../model/error/invalid-payload.error";
 import prisma from "../config/prisma.config";
 import { findUser } from "./user.service";
+import NotFoundError from "../model/error/not-found.error";
 
 export async function createPrivateChat(
   senderId: number,
@@ -9,7 +11,7 @@ export async function createPrivateChat(
   const receiver = await findUser(receiverId)!;
 
   if (sender === null || receiver === null) {
-    throw new Error("error: sender or receiver is null");
+    throw new InvalidPayloadError("error: sender or receiver is null");
   }
 
   const chat = await prisma.chat.create({
@@ -30,6 +32,8 @@ export async function deletePrivateChat(id: number) {
   const chat = await prisma.chat.findFirst({ where: { id: id } });
 
   if (chat === null) {
-    throw new Error(`chat with id ${id} not found`);
+    throw new NotFoundError("Chat", id);
   }
+
+  await prisma.chat.delete({ where: { id: id } });
 }
