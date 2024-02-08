@@ -12,7 +12,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20.10.11"
+          node-version: "20.10.0"
       - name: Build the Docker image
         run: docker build . --file Dockerfile --tag daneker/ts-chat-app:latest
       - name: Tag image
