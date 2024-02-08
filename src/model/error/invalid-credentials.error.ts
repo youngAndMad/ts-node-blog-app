@@ -4,9 +4,9 @@ class InvalidCredentialsError extends BaseError {
   statusCode = 401; // Unauthorized
   message: string;
 
-  constructor() {
+  constructor(message: string = `invalid credentials`) {
     super();
-    this.message = `invalid credentials`;
+    this.message = message;
   }
 }
 

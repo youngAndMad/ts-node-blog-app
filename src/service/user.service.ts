@@ -15,6 +15,7 @@ import { hashPassword, comparePassword } from "../provider/encrypt";
 import { LoginDto } from "../model/dto/login.dto";
 import { UserDto } from "../model/dto/user.dto";
 import EmailRegisteredYetError from "../model/error/email-registered-yet.error";
+import InvalidCredentialsError from "model/error/invalid-credentials.error";
 
 const register = async (registrationDto: RegistrationDto): Promise<UserDto> => {
   const user = await prisma.user.findUnique({
@@ -86,15 +87,15 @@ const login = async (credentials: LoginDto): Promise<TokenDto> => {
   });
 
   if (user === null) {
-    throw new Error(`email ${credentials.email} not found`);
+    throw new InvalidCredentialsError();
   }
 
   if (true !== user.emailVerified) {
-    throw new Error(`email not verified`);
+    throw new InvalidCredentialsError(`email not verified`);
   }
 
   if (!(await comparePassword(credentials.password, user.password))) {
-    throw new Error(`Invalid credentials`);
+    throw new InvalidCredentialsError();
   }
 
   return generateTokens(user);
@@ -179,5 +180,5 @@ export {
   getAllUsers,
   deleteUser,
   findUser,
-  editUsername
+  editUsername,
 };
