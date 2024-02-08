@@ -19,14 +19,7 @@ model User {
   emailVerified Boolean
   otpSentTime   DateTime
   chats         Chat[]
-  profileImage  UserProfileImage?
-}
-
-model UserProfileImage {
-  id     Int    @id @default(autoincrement())
-  url    String
-  userId Int    @unique
-  user   User   @relation(fields: [userId], references: [id])
+  avatar String
 }
 
 enum ChatType {

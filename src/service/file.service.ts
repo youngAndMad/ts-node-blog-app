@@ -1,4 +1,3 @@
-import { UserProfileImage } from "@prisma/client";
 import minioClient from "../config/minio.config";
 import log from "../provider/logger";
 import prisma from "../config/prisma.config";
@@ -7,12 +6,11 @@ import { Response } from "express";
 import NotFoundError from "../model/error/not-found.error";
 
 const USER_PROFILE_IMAGE_BUCKET = "user_profile_image_node";
-const MESSAGE_CONTENT_BUCKET = "message_content";
 
 export async function uploadUserAvatar(
   file: UploadedFile,
   userId: number
-): Promise<UserProfileImage> {
+): Promise<void> {
   await minioClient.putObject(
     USER_PROFILE_IMAGE_BUCKET,
     `${userId}.${getFileExtension(file)}`,
@@ -20,47 +18,33 @@ export async function uploadUserAvatar(
   );
 
   log.info(`uploaded new profile image by user with id ${userId}`);
-  return prisma.userProfileImage.create({
+  await prisma.user.update({
     data: {
-      userId: userId,
-      url: `/api/v1/file/download/profile-image/${userId}`,
+      avatar: file.name,
+    },
+    where: {
+      id: userId,
     },
   });
 }
-
-export async function uploadImage(
-  messageId: number,
-  file: UploadedFile
-): Promise<number> {
-  await minioClient.putObject(
-    USER_PROFILE_IMAGE_BUCKET,
-    `${messageId}.${getFileExtension(file)}`,
-    file.data
-  );
-
-  return 1; //todo implement
-}
-
 
 export async function downloadUserAvatar(
   userId: number,
   res: Response
 ): Promise<void> {
-  const userProfileImage = await prisma.userProfileImage.findFirst({
-    where: { userId: userId },
+  const user = await prisma.user.findFirst({
+    where: {
+      id: userId,
+    },
   });
 
-  if (userProfileImage === null) {
-    throw new NotFoundError("user profile", userId);
+  if (user === null) {
+    throw new NotFoundError("user", userId);
   }
 
-  let fileName = userProfileImage?.url.substring(
-    userProfileImage.url.lastIndexOf("/")
-  );
+  const data = await minioClient.getObject(USER_PROFILE_IMAGE_BUCKET, user.avatar);
 
-  const data = await minioClient.getObject(USER_PROFILE_IMAGE_BUCKET, fileName);
-
-  res.setHeader("Content-disposition", `attachment; filename=${fileName}`);
+  res.setHeader("Content-disposition", `attachment; filename=${user.avatar}`);
   res.setHeader("Content-type", "application/octet-stream");
 
   data.pipe(res);
