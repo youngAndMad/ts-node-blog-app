@@ -32,7 +32,7 @@ const deletePrivateChat = async (id: number) => {
   const chat = await prisma.chat.findFirst({ where: { id: id } });
 
   if (chat === null) {
-    throw new NotFoundError("Chat", id);
+    throw new NotFoundError("chat", id);
   }
 
   await prisma.chat.delete({ where: { id: id } });

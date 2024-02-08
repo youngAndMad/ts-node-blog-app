@@ -42,6 +42,10 @@ const downloadUserAvatar = async (
     throw new NotFoundError("user", userId);
   }
 
+  if (!user.avatar) {
+    throw new NotFoundError("user-profile-image", userId);
+  }
+
   const data = await minioClient.getObject(
     USER_PROFILE_IMAGE_BUCKET,
     user.avatar

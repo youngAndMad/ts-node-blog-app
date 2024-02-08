@@ -15,7 +15,8 @@ import { hashPassword, comparePassword } from "../provider/encrypt";
 import { LoginDto } from "../model/dto/login.dto";
 import { UserDto } from "../model/dto/user.dto";
 import EmailRegisteredYetError from "../model/error/email-registered-yet.error";
-import InvalidCredentialsError from "model/error/invalid-credentials.error";
+import InvalidCredentialsError from "../model/error/invalid-credentials.error";
+import NotFoundError from "../model/error/not-found.error";
 
 const register = async (registrationDto: RegistrationDto): Promise<UserDto> => {
   const user = await prisma.user.findUnique({
@@ -108,7 +109,7 @@ const refreshToken = async (refreshToken: string): Promise<TokenDto> => {
     const user = await prisma.user.findFirst({ where: { email: email } });
 
     if (user === null) {
-      throw new Error("invalid credentials");
+      throw new InvalidCredentialsError();
     }
 
     return generateTokens(user);
@@ -136,7 +137,7 @@ const editUsername = async (id: number, username: string): Promise<UserDto> => {
   });
 
   if (user === null) {
-    throw new Error(`user by id ${id} not found`);
+    throw new NotFoundError("user", id);
   }
 
   return prisma.user.update({
