@@ -16,9 +16,7 @@ import { LoginDto } from "../model/dto/login.dto";
 import { UserDto } from "../model/dto/user.dto";
 import EmailRegisteredYetError from "../model/error/email-registered-yet.error";
 
-export async function register(
-  registrationDto: RegistrationDto
-): Promise<UserDto> {
+const register = async (registrationDto: RegistrationDto): Promise<UserDto> => {
   const user = await prisma.user.findUnique({
     where: { email: registrationDto.email },
   });
@@ -28,7 +26,7 @@ export async function register(
   }
 
   const otp = generateOtp();
-  const otpSentTime = sendOtp(otp, registrationDto.email);
+  const otpSentTime = await sendOtp(otp, registrationDto.email);
 
   const registeredUser = await prisma.user.create({
     data: {
@@ -47,11 +45,11 @@ export async function register(
     username: registeredUser.username,
     emailVerified: false,
   };
-}
+};
 
-export async function confirmEmail(
+const confirmEmail = async (
   emailConfirmDto: ConfirmEmailDto
-): Promise<TokenDto> {
+): Promise<TokenDto> => {
   const user = await prisma.user.findFirst({
     where: { email: emailConfirmDto.email },
   });
@@ -80,9 +78,9 @@ export async function confirmEmail(
   sendGreeting(user.email);
 
   return generateTokens(user);
-}
+};
 
-export async function login(credentials: LoginDto): Promise<TokenDto> {
+const login = async (credentials: LoginDto): Promise<TokenDto> => {
   const user = await prisma.user.findFirst({
     where: { email: credentials.email },
   });
@@ -100,9 +98,9 @@ export async function login(credentials: LoginDto): Promise<TokenDto> {
   }
 
   return generateTokens(user);
-}
+};
 
-export async function refreshToken(refreshToken: string): Promise<TokenDto> {
+const refreshToken = async (refreshToken: string): Promise<TokenDto> => {
   try {
     const decoded: any = await verifyToken(refreshToken, TokenType.REFRESH);
     const email = decoded.user.email; // Assuming user object is present in decoded
@@ -116,9 +114,9 @@ export async function refreshToken(refreshToken: string): Promise<TokenDto> {
   } catch (error: any) {
     throw new Error(error.message);
   }
-}
+};
 
-export async function getAllUsers(): Promise<UserDto[]> {
+const getAllUsers = async (): Promise<UserDto[]> => {
   return prisma.user.findMany({
     select: {
       id: true,
@@ -127,12 +125,9 @@ export async function getAllUsers(): Promise<UserDto[]> {
       emailVerified: true,
     },
   });
-}
+};
 
-export async function editUsername(
-  id: number,
-  username: string
-): Promise<UserDto> {
+const editUsername = async (id: number, username: string): Promise<UserDto> => {
   const user = await prisma.user.findUnique({
     where: {
       id: id,
@@ -148,15 +143,15 @@ export async function editUsername(
     data: { username: username },
     select: { id: true, username: true, email: true, emailVerified: true },
   });
-}
+};
 
-export async function deleteUser(id: number) {
+const deleteUser = async (id: number) => {
   prisma.user.delete({ where: { id: id } });
-}
+};
 
-export async function findUser(id: number): Promise<User | null> {
+const findUser = async (id: number): Promise<User | null> => {
   return prisma.user.findFirst({ where: { id: id } });
-}
+};
 
 const generateOtp = (): number => {
   const min = 100000;
@@ -174,4 +169,15 @@ const generateTokens = (user: User): TokenDto => {
     refreshToken: generateToken(TokenType.REFRESH, user.email, { id: user.id }),
     refreshTokenExpiration: getExpirationByType(TokenType.REFRESH),
   };
+};
+
+export {
+  refreshToken,
+  register,
+  login,
+  confirmEmail,
+  getAllUsers,
+  deleteUser,
+  findUser,
+  editUsername
 };

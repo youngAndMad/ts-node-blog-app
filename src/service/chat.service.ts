@@ -3,10 +3,10 @@ import prisma from "../config/prisma.config";
 import { findUser } from "./user.service";
 import NotFoundError from "../model/error/not-found.error";
 
-export async function createPrivateChat(
+const createPrivateChat = async (
   senderId: number,
   receiverId: number
-): Promise<number> {
+): Promise<number> => {
   const sender = await findUser(senderId)!;
   const receiver = await findUser(receiverId)!;
 
@@ -26,9 +26,9 @@ export async function createPrivateChat(
   });
 
   return chat.id;
-}
+};
 
-export async function deletePrivateChat(id: number) {
+const deletePrivateChat = async (id: number) => {
   const chat = await prisma.chat.findFirst({ where: { id: id } });
 
   if (chat === null) {
@@ -36,4 +36,6 @@ export async function deletePrivateChat(id: number) {
   }
 
   await prisma.chat.delete({ where: { id: id } });
-}
+};
+
+export { deletePrivateChat, createPrivateChat };

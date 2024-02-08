@@ -10,7 +10,7 @@ CREATE TABLE "User" (
     "otp" INTEGER NOT NULL,
     "emailVerified" BOOLEAN NOT NULL,
     "otpSentTime" TIMESTAMP(3) NOT NULL,
-    "avatar" TEXT NOT NULL,
+    "avatar" TEXT,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -28,7 +28,7 @@ CREATE TABLE "Chat" (
 CREATE TABLE "Message" (
     "id" SERIAL NOT NULL,
     "chatId" INTEGER NOT NULL,
-    "content" TEXT NOT NULL,
+    "content" TEXT,
     "sentTime" TIMESTAMP(3) NOT NULL,
     "userId" INTEGER NOT NULL,
 

@@ -1,7 +1,7 @@
 import { ENV } from "../config/env.config";
 import transporter from "../config/mail.config";
 
-export const sendGreeting = (email: string): void => {
+const sendGreeting = async (email: string): Promise<void> => {
   transporter.sendMail({
     from: ENV.EMAIL_SENDER,
     to: email,
@@ -15,7 +15,7 @@ export const sendGreeting = (email: string): void => {
   });
 };
 
-export const sendOtp = (otp: number, email: string): Date => {
+const sendOtp = async (otp: number, email: string): Promise<Date> => {
   transporter.sendMail({
     from: ENV.EMAIL_SENDER,
     to: email,
@@ -27,3 +27,5 @@ export const sendOtp = (otp: number, email: string): Date => {
 
   return new Date();
 };
+
+export { sendGreeting, sendOtp };

@@ -7,10 +7,10 @@ import NotFoundError from "../model/error/not-found.error";
 
 const USER_PROFILE_IMAGE_BUCKET = "user_profile_image_node";
 
-export async function uploadUserAvatar(
+const uploadUserAvatar = async (
   file: UploadedFile,
   userId: number
-): Promise<void> {
+): Promise<void> => {
   await minioClient.putObject(
     USER_PROFILE_IMAGE_BUCKET,
     `${userId}.${getFileExtension(file)}`,
@@ -26,12 +26,12 @@ export async function uploadUserAvatar(
       id: userId,
     },
   });
-}
+};
 
-export async function downloadUserAvatar(
+const downloadUserAvatar = async (
   userId: number,
   res: Response
-): Promise<void> {
+): Promise<void> => {
   const user = await prisma.user.findFirst({
     where: {
       id: userId,
@@ -42,13 +42,18 @@ export async function downloadUserAvatar(
     throw new NotFoundError("user", userId);
   }
 
-  const data = await minioClient.getObject(USER_PROFILE_IMAGE_BUCKET, user.avatar);
+  const data = await minioClient.getObject(
+    USER_PROFILE_IMAGE_BUCKET,
+    user.avatar
+  );
 
   res.setHeader("Content-disposition", `attachment; filename=${user.avatar}`);
   res.setHeader("Content-type", "application/octet-stream");
 
   data.pipe(res);
-}
+};
 
 const getFileExtension = (file: UploadedFile) =>
   file.name.substring(file.name.lastIndexOf("."));
+
+export { downloadUserAvatar, uploadUserAvatar };

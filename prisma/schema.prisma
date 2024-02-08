@@ -11,15 +11,15 @@ datasource db {
 }
 
 model User {
-  id            Int               @id @default(autoincrement())
-  email         String            @unique
+  id            Int      @id @default(autoincrement())
+  email         String   @unique
   password      String
   username      String
   otp           Int
   emailVerified Boolean
   otpSentTime   DateTime
   chats         Chat[]
-  avatar String
+  avatar        String?
 }
 
 enum ChatType {
@@ -39,7 +39,7 @@ model Message {
   id       Int      @id @default(autoincrement())
   chatId   Int
   chat     Chat     @relation(fields: [chatId], references: [id])
-  content  String
+  content  String?
   sentTime DateTime
   userId   Int
 }
