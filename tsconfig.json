@@ -7,8 +7,8 @@
     "strictPropertyInitialization": false,
     "strict": true,
     "skipLibCheck": true,
-    "outDir": "./dist",
-    "baseUrl": "src"
+    "outDir": "./dist"
+    // "baseUrl": "src"
     // "paths": {
     //   "service": ["../service/"],
     //   "@model": ["../model/"],

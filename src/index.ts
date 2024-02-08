@@ -10,6 +10,7 @@ import { app, server } from "./provider/socket";
 import BaseError from "./model/error/base-error";
 import chatRouter from "./router/chat.router";
 import fileRouter from "./router/file.router";
+import messageRouter from "./router/message.router";
 
 app.use(json());
 app.use(fileUpload());
@@ -21,6 +22,7 @@ app.use((err: BaseError, req: Request, res: Response, next: NextFunction) => {
 app.use("/api/v1/user/", userRouter);
 app.use("/api/v1/chat/", chatRouter);
 app.use("/api/v1/file/", fileRouter);
+app.use("/api/v1/message/", messageRouter);
 
 const port = ENV.PORT;
 

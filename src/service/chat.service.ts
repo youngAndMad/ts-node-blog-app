@@ -2,6 +2,8 @@ import InvalidPayloadError from "../model/error/invalid-payload.error";
 import prisma from "../config/prisma.config";
 import { findUser } from "./user.service";
 import NotFoundError from "../model/error/not-found.error";
+import { Chat, User } from "@prisma/client";
+import { UserDto } from "../model/dto/user.dto";
 
 const createPrivateChat = async (
   senderId: number,
@@ -38,4 +40,26 @@ const deletePrivateChat = async (id: number) => {
   await prisma.chat.delete({ where: { id: id } });
 };
 
-export { deletePrivateChat, createPrivateChat };
+const getChatMembers = async (id: number): Promise<UserDto[]> => {
+  const chat = await prisma.chat.findFirst({
+    where: { id: id },
+    select: {
+      members: true,
+    },
+  });
+
+  if (chat === null) {
+    throw new NotFoundError("chat", id);
+  }
+
+  return chat.members.map((user: User) => {
+    return {
+      id: user.id,
+      email: user.email,
+      username: user.username,
+      emailVerified: user.emailVerified,
+    };
+  });
+};
+
+export { deletePrivateChat, createPrivateChat, getChatMembers };
