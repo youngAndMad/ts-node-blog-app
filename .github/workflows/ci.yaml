@@ -19,8 +19,8 @@ jobs:
         run: docker tag daneker/ts-chat-app daneker/ts-chat-app:latest
       - name: Log in to Docker Hub
         run: docker login --username ${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_PASSWORD }}
-      - name: Push Docker Image
-        run: docker push daneker/ts-chat-app
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Push Docker Image
+        run: docker push daneker/ts-chat-app
