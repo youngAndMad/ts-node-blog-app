@@ -5,7 +5,7 @@ import { UploadedFile } from "express-fileupload";
 import { Response } from "express";
 import NotFoundError from "../model/error/not-found.error";
 
-const USER_PROFILE_IMAGE_BUCKET = "user_profile_image_node";
+const USER_PROFILE_IMAGE_BUCKET = "user-profile-image-node";
 
 const uploadUserAvatar = async (
   file: UploadedFile,
@@ -57,7 +57,17 @@ const downloadUserAvatar = async (
   data.pipe(res);
 };
 
+const checkBuckets = async () => {
+  const userProfileImageBucketIsExists = await minioClient.bucketExists(
+    USER_PROFILE_IMAGE_BUCKET
+  );
+
+  if (!userProfileImageBucketIsExists) {
+    await minioClient.makeBucket(USER_PROFILE_IMAGE_BUCKET);
+  }
+};
+
 const getFileExtension = (file: UploadedFile) =>
   file.name.substring(file.name.lastIndexOf("."));
 
-export { downloadUserAvatar, uploadUserAvatar };
+export { downloadUserAvatar, uploadUserAvatar, checkBuckets };

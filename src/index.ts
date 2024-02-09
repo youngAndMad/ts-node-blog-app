@@ -1,5 +1,5 @@
 import { NextFunction, Response, json, Request } from "express";
-import logger from "./provider/logger";
+import log from "./provider/logger";
 import cors from "cors";
 import { ENV } from "./config/env.config";
 import prisma from "./config/prisma.config";
@@ -11,12 +11,14 @@ import BaseError from "./model/error/base-error";
 import chatRouter from "./router/chat.router";
 import fileRouter from "./router/file.router";
 import messageRouter from "./router/message.router";
+import { checkBuckets } from "./service/file.service";
 
 app.use(json());
 app.use(fileUpload());
 app.use(cors());
 app.use(requestLoggerMiddleware);
 app.use((err: BaseError, req: Request, res: Response, next: NextFunction) => {
+  log.error(`handled error ${err.message}`);
   return res.status(err.statusCode).json(err);
 });
 app.use("/api/v1/user/", userRouter);
@@ -29,13 +31,13 @@ const port = ENV.PORT;
 async function main() {
   console.table(ENV);
   server.listen(port, () => {
-    logger.info(`[server]: Server is running at :${port}`);
+    log.info(`[server]: Server is running at :${port}`);
   });
 }
-
 main()
+  .then(async () => await checkBuckets())
   .catch(async (e) => {
-    logger.error(e);
+    log.error(e);
     process.exit(1);
   })
   .finally(async () => {

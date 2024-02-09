@@ -7,7 +7,6 @@ const requestLoggerMiddleware = (
   next: NextFunction
 ) => {
   logger.info(`http method exec ${req.method} ${req.url}`, {
-    requestHeaders: req.headers,
     requestBody: req.body,
   });
 
