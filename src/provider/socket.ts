@@ -7,6 +7,10 @@ import {
   setOnline,
 } from "../service/user-status.service";
 import { setUserSocket, clearUserSocket } from "../service/user-socket.service";
+import { verifyToken } from "./jwt";
+import { TokenType } from "../model/enum/token-type";
+import { findUser } from "../service/user.service";
+import { UserDto } from "../model/dto/user.dto";
 
 const app = express();
 
@@ -20,23 +24,29 @@ const io = new Server(server, {
 
 io.on("connection", async (socket) => {
   console.log("a user connected", socket.id);
+  let token = socket.handshake.auth.token;
+  console.log(token);
 
-  const userId = +socket.handshake.query.userId!;
-  if (userId !== undefined) {
-    setOnline(userId);
-    await setUserSocket(userId, socket.id);
-  }
+  verifyToken(token.substring("Bearer ".length), TokenType.ACCESS)
+    .then(async (val) => {
+      console.log(val);
+      const user = (await findUser(val.id)) as UserDto;
+      setOnline(user.id);
+      await setUserSocket(user.id, socket.id);
 
-  // io.emit() is used to send events to all the connected clients
-  io.emit("getOnlineUsers", await getAllOnlineUsers());
+      io.emit("getOnlineUsers", await getAllOnlineUsers());
 
-  // socket.on() is used to listen to the events. can be used both on client and server side
-  socket.on("disconnect", async () => {
-    console.log("user disconnected", socket.id);
-    setOffline(userId);
-    clearUserSocket(userId);
-    io.emit("getOnlineUsers", await getAllOnlineUsers());
-  });
+      socket.on("disconnect", async () => {
+        console.log("user disconnected", socket.id);
+        setOffline(user.id);
+        clearUserSocket(user.id);
+        io.emit("getOnlineUsers", await getAllOnlineUsers());
+      });
+    })
+    .catch((err) => {
+      console.error(err);
+      socket.disconnect();
+    });
 });
 
 export { app, io, server };
