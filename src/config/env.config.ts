@@ -17,6 +17,7 @@ export const ENV: Environment = {
   ACCESS_TOKEN_EXPIRATION: process.env.ACCESS_TOKEN_EXPIRATION!,
   OTP_EXPIRATION_SECONDS: +process.env.OTP_EXPIRATION_SECONDS!,
   REDIS_URL: process.env.REDIS_URL!,
+  REDIS_PASSWORD: process.env.REDIS_PASSWORD!,
   MINIO_ACCESS_KEY: process.env.MINIO_ACCESS_KEY!,
   MINIO_SECRET_KEY: process.env.MINIO_SECRET_KEY!,
   MINIO_USE_SSL: process.env.MINIO_USE_SSL === "true",

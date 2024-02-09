@@ -12,6 +12,7 @@ import chatRouter from "./router/chat.router";
 import fileRouter from "./router/file.router";
 import messageRouter from "./router/message.router";
 import { checkBuckets } from "./service/file.service";
+import redisClient from "./config/redis.config";
 
 app.use(json());
 app.use(fileUpload());
@@ -36,6 +37,7 @@ async function main() {
 }
 main()
   .then(async () => await checkBuckets())
+  .then(async () => await redisClient.connect())
   .catch(async (e) => {
     log.error(e);
     process.exit(1);
