@@ -11,11 +11,7 @@ const uploadUserAvatar = async (
   file: UploadedFile,
   userId: number
 ): Promise<void> => {
-  await minioClient.putObject(
-    USER_PROFILE_IMAGE_BUCKET,
-    `${userId}.${getFileExtension(file)}`,
-    file.data
-  );
+  await minioClient.putObject(USER_PROFILE_IMAGE_BUCKET, file.name, file.data);
 
   log.info(`uploaded new profile image by user with id ${userId}`);
   await prisma.user.update({

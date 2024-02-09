@@ -6,11 +6,19 @@ const requestLoggerMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
-  logger.info(`http method exec ${req.method} ${req.url}`, {
-    requestBody: req.body,
-  });
+  const startTime = Date.now(); // Capture the start time
 
   next();
+
+  const endTime = Date.now();
+  const executionTime = endTime - startTime;
+
+  logger.info(
+    `HTTP method exec ${req.method} ${req.url} execution ${executionTime}ms`,
+    {
+      requestBody: req.body,
+    }
+  );
 };
 
 export default requestLoggerMiddleware;
