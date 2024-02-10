@@ -11,6 +11,16 @@ const uploadUserAvatar = async (
   file: UploadedFile,
   userId: number
 ): Promise<void> => {
+  const user = await prisma.user.findFirst({ where: { id: userId } });
+
+  if (user === null) {
+    throw new NotFoundError("user", userId);
+  }
+
+  if (user.avatar !== null) {
+    await minioClient.removeObject(USER_PROFILE_IMAGE_BUCKET, user.avatar);
+  }
+
   await minioClient.putObject(USER_PROFILE_IMAGE_BUCKET, file.name, file.data);
 
   log.info(`uploaded new profile image by user with id ${userId}`);
@@ -62,8 +72,5 @@ const checkBuckets = async () => {
     await minioClient.makeBucket(USER_PROFILE_IMAGE_BUCKET);
   }
 };
-
-const getFileExtension = (file: UploadedFile) =>
-  file.name.substring(file.name.lastIndexOf("."));
 
 export { downloadUserAvatar, uploadUserAvatar, checkBuckets };
