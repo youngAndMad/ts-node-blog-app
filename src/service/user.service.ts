@@ -155,6 +155,26 @@ const findUser = async (id: number): Promise<User | null> => {
   return prisma.user.findFirst({ where: { id: id } });
 };
 
+const suggestUsers = async (name: string): Promise<UserDto[]> => {
+  return prisma.user.findMany({
+    where: {
+      OR: [
+        {
+          username: {
+            contains: name,
+          },
+        },
+        {
+          email: {
+            contains: name,
+          },
+        },
+      ],
+    },
+    select: { id: true, username: true, email: true, emailVerified: true },
+  });
+};
+
 const generateOtp = (): number => {
   const min = 100000;
   const max = 999999;
@@ -181,5 +201,6 @@ export {
   getAllUsers,
   deleteUser,
   findUser,
+  suggestUsers,
   editUsername,
 };

@@ -11,6 +11,7 @@ import { verifyToken } from "./jwt";
 import { TokenType } from "../model/enum/token-type";
 import { findUser } from "../service/user.service";
 import { UserDto } from "../model/dto/user.dto";
+import log from "./logger";
 
 const app = express();
 
@@ -23,18 +24,22 @@ const io = new Server(server, {
 });
 
 io.on("connection", async (socket) => {
-  console.log("a user connected", socket.id);
   let token = socket.handshake.auth.token;
-  console.log(token);
-
   verifyToken(token.substring("Bearer ".length), TokenType.ACCESS)
     .then(async (val) => {
       console.log(val);
       const user = (await findUser(val.id)) as UserDto;
+
+      if(user == null){
+        log.error("invalid credentials to open socket connection")
+        socket.disconnect()
+      }
+
       setOnline(user.id);
       await setUserSocket(user.id, socket.id);
 
       io.emit("getOnlineUsers", await getAllOnlineUsers());
+      socket.emit("greeting", `Hello, ${user.username}! Welcome to the chat.`);
 
       socket.on("disconnect", async () => {
         console.log("user disconnected", socket.id);

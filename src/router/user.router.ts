@@ -7,6 +7,7 @@ import {
   getAllUsers,
   editUsername,
   deleteUser,
+  suggestUsers,
 } from "../service/user.service";
 import { registrationValidationRules } from "../model/dto/registration.dto";
 import { emailConfirmationValidationRules } from "../model/dto/confirm-email.dto";
@@ -88,6 +89,11 @@ userRouter.patch("/:id", async (req: Request, res: Response) => {
 userRouter.delete("/:id", async (req: Request, res: Response) => {
   await deleteUser(+req.params.id);
   res.status(204);
+});
+
+userRouter.get("/suggest", async (req: Request, res: Response) => {
+  const users = await suggestUsers(req.params.query);
+  res.json(users);
 });
 
 export default userRouter;
