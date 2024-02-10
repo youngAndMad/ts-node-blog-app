@@ -107,4 +107,4 @@ const getChatById = async (id: number): Promise<ChatResponseDto> => {
   };
 };
 
-export { deletePrivateChat, createPrivateChat, getChatMembers, getChatById };
+export { deletePrivateChat, createPrivateChat, getChatMembers ,getChatById};

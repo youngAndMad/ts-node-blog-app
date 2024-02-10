@@ -41,6 +41,10 @@ io.on("connection", async (socket) => {
       io.emit("getOnlineUsers", await getAllOnlineUsers());
       socket.emit("greeting", `Hello, ${user.username}! Welcome to the chat.`);
 
+      socket.on("newMessage", (message: any) => {
+        console.log("new message", message);
+      });
+
       socket.on("disconnect", async () => {
         console.log("user disconnected", socket.id);
         setOffline(user.id);
