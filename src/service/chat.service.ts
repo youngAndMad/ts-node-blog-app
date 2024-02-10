@@ -23,7 +23,6 @@ const createPrivateChat = async (
       },
       createdTime: new Date(),
       messages: { create: [] },
-      type: "PRIVATE",
     },
   });
 

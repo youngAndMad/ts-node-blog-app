@@ -22,14 +22,8 @@ model User {
   avatar        String?
 }
 
-enum ChatType {
-  PRIVATE
-  GROUP
-}
-
 model Chat {
   id          Int       @id @default(autoincrement())
-  type        ChatType
   createdTime DateTime
   members     User[]
   messages    Message[]

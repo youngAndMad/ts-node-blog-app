@@ -30,9 +30,9 @@ io.on("connection", async (socket) => {
       console.log(val);
       const user = (await findUser(val.id)) as UserDto;
 
-      if(user == null){
-        log.error("invalid credentials to open socket connection")
-        socket.disconnect()
+      if (user == null) {
+        log.error("invalid credentials to open socket connection");
+        socket.disconnect();
       }
 
       setOnline(user.id);
@@ -50,6 +50,7 @@ io.on("connection", async (socket) => {
     })
     .catch((err) => {
       console.error(err);
+      socket.emit("error", err);
       socket.disconnect();
     });
 });
