@@ -1,5 +1,9 @@
 import express, { Request, Response } from "express";
-import { createPrivateChat, deletePrivateChat } from "../service/chat.service";
+import {
+  createPrivateChat,
+  deletePrivateChat,
+  getChatById,
+} from "../service/chat.service";
 
 const chatRouter = express.Router();
 
@@ -12,6 +16,11 @@ chatRouter.post("", async (req: Request, res: Response) => {
 chatRouter.delete("/:id", async (req: Request, res: Response) => {
   await deletePrivateChat(+req.params.id);
   res.status(204); // no content
+});
+
+chatRouter.get("/:id", async (req: Request, res: Response) => {
+  const chat = await getChatById(+req.params.id);
+  res.json(chat);
 });
 
 export default chatRouter;

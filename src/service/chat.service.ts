@@ -4,6 +4,8 @@ import { findUser } from "./user.service";
 import NotFoundError from "../model/error/not-found.error";
 import { User } from "@prisma/client";
 import { UserDto } from "../model/dto/user.dto";
+import { ChatResponseDto } from "../model/dto/chat-response.dto";
+import { MessageResponseDto } from "../model/dto/message-response.dto";
 
 const createPrivateChat = async (
   senderId: number,
@@ -61,4 +63,48 @@ const getChatMembers = async (id: number): Promise<UserDto[]> => {
   });
 };
 
-export { deletePrivateChat, createPrivateChat, getChatMembers };
+const getChatById = async (id: number): Promise<ChatResponseDto> => {
+  const chat = await prisma.chat.findUnique({
+    where: {
+      id: id,
+    },
+    include: {
+      members: {
+        select: {
+          id: true,
+          email: true,
+          username: true,
+          emailVerified: true,
+        },
+      },
+      messages: true,
+    },
+  });
+
+  if (!chat) {
+    throw new NotFoundError("chat", id); // Chat with the given ID not found
+  }
+
+  return {
+    id: chat.id,
+    createdTime: chat.createdTime,
+    members: chat.members.map((member) => {
+      return {
+        id: member.id,
+        email: member.email,
+        username: member.username,
+        emailVerified: member.emailVerified,
+      };
+    }),
+    messages: chat.messages.map((message) => {
+      return {
+        id: message.id,
+        content: message.content,
+        sentTime: message.sentTime,
+        senderId: message.userId,
+      } as MessageResponseDto;
+    }),
+  };
+};
+
+export { deletePrivateChat, createPrivateChat, getChatMembers, getChatById };
