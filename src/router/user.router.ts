@@ -92,7 +92,8 @@ userRouter.delete("/:id", async (req: Request, res: Response) => {
 });
 
 userRouter.get("/suggest", async (req: Request, res: Response) => {
-  const users = await suggestUsers(req.params.query, +req.params.id);
+  console.log(+req.query.id!);
+  const users = await suggestUsers(req.query.query as string, +req.query.id!);
   res.json(users);
 });
 

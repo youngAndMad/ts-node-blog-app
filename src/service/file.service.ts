@@ -49,7 +49,8 @@ const downloadUserAvatar = async (
   }
 
   if (!user.avatar) {
-    throw new NotFoundError("user-profile-image", userId);
+    res.status(404).send("User does not have an avatar");
+    return;
   }
 
   const data = await minioClient.getObject(

@@ -31,17 +31,20 @@ const port = ENV.PORT;
 
 async function main() {
   console.table(ENV);
-  server.listen(port, () => {
-    log.info(`[server]: Server is running at :${port}`);
-  });
+  server.listen(port);
 }
+
 main()
   .then(async () => await checkBuckets())
   .then(async () => await redisClient.connect())
+  .then(() => {
+    log.info(`[server]: Server is running at :${port}`);
+  })
   .catch(async (e) => {
     log.error(e);
     process.exit(1);
   })
   .finally(async () => {
     await prisma.$disconnect();
+    await redisClient.disconnect();
   });

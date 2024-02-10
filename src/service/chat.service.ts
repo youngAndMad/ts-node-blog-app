@@ -2,7 +2,7 @@ import InvalidPayloadError from "../model/error/invalid-payload.error";
 import prisma from "../config/prisma.config";
 import { findUser } from "./user.service";
 import NotFoundError from "../model/error/not-found.error";
-import { Chat, User } from "@prisma/client";
+import { User } from "@prisma/client";
 import { UserDto } from "../model/dto/user.dto";
 
 const createPrivateChat = async (
