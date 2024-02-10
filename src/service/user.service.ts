@@ -155,7 +155,10 @@ const findUser = async (id: number): Promise<User | null> => {
   return prisma.user.findFirst({ where: { id: id } });
 };
 
-const suggestUsers = async (name: string): Promise<UserDto[]> => {
+const suggestUsers = async (
+  name: string,
+  currentUserId: number
+): Promise<UserDto[]> => {
   return prisma.user.findMany({
     where: {
       OR: [
@@ -170,6 +173,11 @@ const suggestUsers = async (name: string): Promise<UserDto[]> => {
           },
         },
       ],
+      NOT: {
+        id: {
+          equals: currentUserId,
+        },
+      },
     },
     select: { id: true, username: true, email: true, emailVerified: true },
   });
