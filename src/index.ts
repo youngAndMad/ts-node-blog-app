@@ -1,5 +1,5 @@
 import { NextFunction, Response, json, Request } from "express";
-import log from "./provider/logger";
+import { getLogger } from "./provider/logger";
 import cors from "cors";
 import { ENV } from "./config/env.config";
 import prisma from "./config/prisma.config";
@@ -13,6 +13,8 @@ import fileRouter from "./router/file.router";
 import messageRouter from "./router/message.router";
 import { checkBuckets } from "./service/file.service";
 import redisClient from "./config/redis.config";
+
+const log = getLogger("app");
 
 app.use(json());
 app.use(fileUpload());
@@ -36,7 +38,10 @@ async function main() {
 
 main()
   .then(async () => await checkBuckets())
-  .then(async () => await redisClient.connect())
+  .then(async () => {
+    await redisClient.connect();
+    log.info("successfully connected to redis");
+  })
   .then(() => {
     log.info(`[server]: Server is running at :${port}`);
   })

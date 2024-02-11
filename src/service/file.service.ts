@@ -1,11 +1,12 @@
 import minioClient from "../config/minio.config";
-import log from "../provider/logger";
+import { getLogger } from "../provider/logger";
 import prisma from "../config/prisma.config";
 import { UploadedFile } from "express-fileupload";
 import { Response } from "express";
 import NotFoundError from "../model/error/not-found.error";
 
 const USER_PROFILE_IMAGE_BUCKET = "user-profile-image-node";
+const log = getLogger("file.service");
 
 const uploadUserAvatar = async (
   file: UploadedFile,
@@ -71,6 +72,9 @@ const checkBuckets = async () => {
 
   if (!userProfileImageBucketIsExists) {
     await minioClient.makeBucket(USER_PROFILE_IMAGE_BUCKET);
+    log.info("USER_PROFILE_IMAGE_BUCKET successfully created");
+  } else {
+    log.info("USER_PROFILE_IMAGE_BUCKET already exists");
   }
 };
 
