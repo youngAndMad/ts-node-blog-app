@@ -75,7 +75,10 @@ const confirmEmail = async (
 
   await prisma.user.update({
     where: { email: user.email },
-    data: { emailVerified: true },
+    data: {
+      emailVerified: true,
+      role: "USER",
+    },
   });
 
   sendGreeting(user.email);
