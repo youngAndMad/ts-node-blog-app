@@ -1,3 +1,6 @@
+-- CreateEnum
+CREATE TYPE "SecurityRole" AS ENUM ('GUEST', 'USER', 'ADMIN');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
@@ -8,6 +11,7 @@ CREATE TABLE "User" (
     "emailVerified" BOOLEAN NOT NULL,
     "otpSentTime" TIMESTAMP(3) NOT NULL,
     "avatar" TEXT,
+    "role" "SecurityRole" NOT NULL DEFAULT 'GUEST',
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );

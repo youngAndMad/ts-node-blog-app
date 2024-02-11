@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import logger from "../provider/logger";
+import { getLogger } from "../provider/logger";
+
+const log = getLogger("logging.middleware");
 
 const requestLoggerMiddleware = (
   req: Request,
@@ -13,8 +15,8 @@ const requestLoggerMiddleware = (
   const endTime = Date.now();
   const executionTime = endTime - startTime;
 
-  logger.info(
-    `HTTP method exec ${req.method} ${req.url} execution ${executionTime}ms`,
+  log.info(
+    `Completed api request ${req.method} ${req.url} execution ${executionTime}ms`,
     {
       requestBody: req.body,
     }

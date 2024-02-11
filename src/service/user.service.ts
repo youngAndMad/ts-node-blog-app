@@ -195,9 +195,15 @@ const generateOtp = (): number => {
 
 const generateTokens = (user: User): TokenDto => {
   return {
-    accessToken: generateToken(TokenType.ACCESS, user.email, { id: user.id }),
+    accessToken: generateToken(TokenType.ACCESS, user.email, {
+      id: user.id,
+      role: user.role,
+    }),
     accessTokenExpiration: getExpirationByType(TokenType.ACCESS),
-    refreshToken: generateToken(TokenType.REFRESH, user.email, { id: user.id }),
+    refreshToken: generateToken(TokenType.REFRESH, user.email, {
+      id: user.id,
+      role: user.role,
+    }),
     refreshTokenExpiration: getExpirationByType(TokenType.REFRESH),
   };
 };

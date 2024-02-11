@@ -1,15 +1,15 @@
-import { TokenType } from "../model/enum/token-type";
-import { verifyToken } from "../provider/jwt";
 import { Request, Response, NextFunction } from "express";
 import { getLogger } from "../provider/logger";
+import { verifyToken } from "../provider/jwt";
+import { TokenType } from "../model/enum/token-type";
 
-const log = getLogger("auth.niddleware");
+const log = getLogger("admin.middleware");
 
-export function authTokenMiddleware(
+export const adminMiddleware = (
   req: Request,
   res: Response,
   next: NextFunction
-): void {
+) => {
   const token = req.header("Authorization")!;
 
   if (!token) {
@@ -24,11 +24,16 @@ export function authTokenMiddleware(
 
   verifyToken(token.substring("Bearer ".length), TokenType.ACCESS)
     .then((val) => {
-      log.info(`success token validation user = ${val.sub}`);
-      next();
+      if (val.role === "ADMIN") {
+        log.info(`success token validation admin = ${val.sub}`);
+        next();
+      } else {
+        log.warn(`user ${val.sub} have not access to endpoint ${req.url}`);
+        res.status(403).json({ message: "Forbidden" });
+      }
     })
     .catch((error) => {
       log.error(`token validation failed ${error.message}`);
       res.status(403).json({ error: error });
     });
-}
+};
