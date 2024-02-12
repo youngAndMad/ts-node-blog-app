@@ -59,6 +59,7 @@ const getChatMembers = async (id: number): Promise<UserDto[]> => {
       email: user.email,
       username: user.username,
       emailVerified: user.emailVerified,
+      role: user.role,
     };
   });
 };
@@ -75,6 +76,7 @@ const getChatById = async (id: number): Promise<ChatResponseDto> => {
           email: true,
           username: true,
           emailVerified: true,
+          role: true,
         },
       },
       messages: true,
@@ -94,6 +96,7 @@ const getChatById = async (id: number): Promise<ChatResponseDto> => {
         email: member.email,
         username: member.username,
         emailVerified: member.emailVerified,
+        role: member.role,
       };
     }),
     messages: chat.messages.map((message) => {
@@ -107,4 +110,4 @@ const getChatById = async (id: number): Promise<ChatResponseDto> => {
   };
 };
 
-export { deletePrivateChat, createPrivateChat, getChatMembers ,getChatById};
+export { deletePrivateChat, createPrivateChat, getChatMembers, getChatById };

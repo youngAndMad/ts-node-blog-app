@@ -18,6 +18,15 @@ import EmailRegisteredYetError from "../model/error/email-registered-yet.error";
 import InvalidCredentialsError from "../model/error/invalid-credentials.error";
 import NotFoundError from "../model/error/not-found.error";
 import { LoginResponse } from "../model/dto/login-response.dto";
+import { mapUserToDto } from "../provider/user.mapper";
+
+const userDtoFields = {
+  id: true,
+  username: true,
+  email: true,
+  emailVerified: true,
+  role: true,
+};
 
 const register = async (registrationDto: RegistrationDto): Promise<UserDto> => {
   const user = await prisma.user.findUnique({
@@ -42,12 +51,7 @@ const register = async (registrationDto: RegistrationDto): Promise<UserDto> => {
     },
   });
 
-  return {
-    email: registeredUser.email,
-    id: registeredUser.id,
-    username: registeredUser.username,
-    emailVerified: false,
-  };
+  return mapUserToDto(registeredUser);
 };
 
 const confirmEmail = async (
@@ -103,7 +107,7 @@ const login = async (credentials: LoginDto): Promise<LoginResponse> => {
     throw new InvalidCredentialsError();
   }
 
-  return { user: user, tokens: generateTokens(user) };
+  return { user: mapUserToDto(user), tokens: generateTokens(user) };
 };
 
 const refreshToken = async (refreshToken: string): Promise<TokenDto> => {
@@ -124,12 +128,7 @@ const refreshToken = async (refreshToken: string): Promise<TokenDto> => {
 
 const getAllUsers = async (): Promise<UserDto[]> => {
   return prisma.user.findMany({
-    select: {
-      id: true,
-      username: true,
-      email: true,
-      emailVerified: true,
-    },
+    select: userDtoFields,
   });
 };
 
@@ -147,7 +146,7 @@ const editUsername = async (id: number, username: string): Promise<UserDto> => {
   return prisma.user.update({
     where: { id: id },
     data: { username: username },
-    select: { id: true, username: true, email: true, emailVerified: true },
+    select: userDtoFields,
   });
 };
 
@@ -156,7 +155,7 @@ const deleteUser = async (id: number) => {
 };
 
 const findUser = async (id: number): Promise<User | null> => {
-  return prisma.user.findFirst({ where: { id: id } });
+  return await prisma.user.findFirst({ where: { id: id } });
 };
 
 const suggestUsers = async (
@@ -183,7 +182,7 @@ const suggestUsers = async (
         },
       },
     },
-    select: { id: true, username: true, email: true, emailVerified: true },
+    select: userDtoFields,
   });
 };
 

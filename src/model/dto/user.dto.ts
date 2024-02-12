@@ -3,4 +3,5 @@ export type UserDto = {
   email: string;
   username: string;
   emailVerified: boolean;
+  role: "ADMIN" | "USER" | "GUEST";
 };

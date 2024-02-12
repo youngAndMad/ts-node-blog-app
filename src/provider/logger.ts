@@ -21,7 +21,9 @@ const log = createLogger({
     format.colorize(),
     format.printf(
       ({ level, message, timestamp, className }) =>
-        `[${timestamp}] ${className} ${level}: ${message}`
+        `[${timestamp}] ${
+          className === undefined ? "app" : className
+        } ${level}: ${message}`
     )
   ),
   transports: [new transports.Console()],
