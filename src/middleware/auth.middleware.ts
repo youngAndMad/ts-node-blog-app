@@ -3,6 +3,14 @@ import { verifyToken } from "../provider/jwt";
 import { Request, Response, NextFunction } from "express";
 import { getLogger } from "../provider/logger";
 
+declare global {
+  namespace Express {
+    interface Request {
+      user?: any; // Update the type according to your user model
+    }
+  }
+}
+
 const log = getLogger("auth.niddleware");
 
 export function authTokenMiddleware(
@@ -25,6 +33,7 @@ export function authTokenMiddleware(
   verifyToken(token.substring("Bearer ".length), TokenType.ACCESS)
     .then((val) => {
       log.info(`success token validation user = ${val.sub}`);
+      req.user = val.id;
       next();
     })
     .catch((error) => {

@@ -1,7 +1,8 @@
 import redisClient from "../config/redis.config";
-import log from "../provider/logger";
+import { getLogger } from "../provider/logger";
 
 const ONLINE_USERS_SET = "online-users";
+const log = getLogger("user-status.service");
 
 const setOnline = async (userId: number) => {
   try {

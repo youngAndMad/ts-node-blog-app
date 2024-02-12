@@ -28,7 +28,6 @@ io.on("connection", async (socket) => {
   let token = socket.handshake.auth.token;
   verifyToken(token.substring("Bearer ".length), TokenType.ACCESS)
     .then(async (val) => {
-      console.log(val);
       const user = (await findUser(val.id)) as UserDto;
 
       if (user == null) {

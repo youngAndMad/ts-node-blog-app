@@ -4,6 +4,7 @@ import {
   deletePrivateChat,
   getChatById,
 } from "../service/chat.service";
+import { authTokenMiddleware } from "../middleware/auth.middleware";
 
 const chatRouter = express.Router();
 
@@ -22,5 +23,13 @@ chatRouter.get("/:id", async (req: Request, res: Response) => {
   const chat = await getChatById(+req.params.id);
   res.json(chat);
 });
+
+chatRouter.get(
+  "/",
+  authTokenMiddleware,
+  async (req: Request, res: Response) => {
+    res.json({ message: "hello" });
+  }
+);
 
 export default chatRouter;
