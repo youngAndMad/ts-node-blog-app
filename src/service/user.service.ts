@@ -19,6 +19,7 @@ import InvalidCredentialsError from "../model/error/invalid-credentials.error";
 import NotFoundError from "../model/error/not-found.error";
 import { LoginResponse } from "../model/dto/login-response.dto";
 import { mapUserToDto } from "../provider/mapper/user.mapper";
+import { getLogger } from "../provider/logger";
 
 const userDtoFields = {
   id: true,
@@ -27,6 +28,8 @@ const userDtoFields = {
   emailVerified: true,
   role: true,
 };
+
+const log = getLogger("user.service")
 
 const register = async (registrationDto: RegistrationDto): Promise<UserDto> => {
   const user = await prisma.user.findUnique({
@@ -112,20 +115,19 @@ const login = async (credentials: LoginDto): Promise<LoginResponse> => {
 
 const refreshToken = async (refreshToken: string): Promise<TokenDto> => {
   try {
-    const decoded: any = await verifyToken(refreshToken, TokenType.REFRESH);
-    const email = decoded.user.email; // Assuming user object is present in decoded
-    const user = await prisma.user.findFirst({ where: { email: email } });
+    const val = await verifyToken(refreshToken, TokenType.REFRESH);
+    const user = await prisma.user.findFirst({ where: { email: val.sub } });
 
-    if (user === null) {
+    if (!user) {
       throw new InvalidCredentialsError();
     }
 
     return generateTokens(user);
-  } catch (error: any) {
-    throw new Error(error.message);
+  } catch (error) {
+    log.error("Error refreshing token:", error);
+    throw new InvalidCredentialsError();
   }
 };
-
 const getAllUsers = async (): Promise<UserDto[]> => {
   return prisma.user.findMany({
     select: userDtoFields,

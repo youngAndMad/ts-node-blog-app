@@ -8,7 +8,7 @@ const requestLoggerMiddleware = (
   res: Response,
   next: NextFunction
 ) => {
-  const startTime = Date.now(); // Capture the start time
+  const startTime = Date.now();
 
   next();
 

@@ -42,18 +42,18 @@ io.on("connection", async (socket) => {
       socket.emit("greeting", `Hello, ${user.username}! Welcome to the chat.`);
 
       socket.on("newMessage", (message: any) => {
-        console.log("new message", message);
+        log.info("new message", message);
       });
 
       socket.on("disconnect", async () => {
-        console.log("user disconnected", user.id);
+        log.info("user disconnected", user.id);
         setOffline(user.id);
         clearUserSocket(user.id);
         io.emit("getOnlineUsers", await getAllOnlineUsers());
       });
     })
     .catch((err) => {
-      console.error(err);
+      log.error(err);
       socket.emit("error", err);
       socket.disconnect();
     });

@@ -32,7 +32,7 @@ export function authTokenMiddleware(
 
   verifyToken(token.substring("Bearer ".length), TokenType.ACCESS)
     .then((val) => {
-      log.info(`success token validation user = ${val.sub}`);
+      log.info(`success token validation user [${val.sub}]`);
       req.user = val.id;
       next();
     })
