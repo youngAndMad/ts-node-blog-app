@@ -1,5 +1,5 @@
 import { User } from "@prisma/client";
-import { UserDto } from "../model/dto/user.dto";
+import { UserDto } from "../../model/dto/user.dto";
 
 const mapUserToDto = (user: User): UserDto => {
   return {

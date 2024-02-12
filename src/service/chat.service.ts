@@ -5,7 +5,7 @@ import NotFoundError from "../model/error/not-found.error";
 import { User } from "@prisma/client";
 import { UserDto } from "../model/dto/user.dto";
 import { ChatResponseDto } from "../model/dto/chat-response.dto";
-import { MessageResponseDto } from "../model/dto/message-response.dto";
+import { mapChatToDto } from "../provider/mapper/chat.mapper";
 
 const createPrivateChat = async (
   senderId: number,
@@ -87,27 +87,39 @@ const getChatById = async (id: number): Promise<ChatResponseDto> => {
     throw new NotFoundError("chat", id); // Chat with the given ID not found
   }
 
-  return {
-    id: chat.id,
-    createdTime: chat.createdTime,
-    members: chat.members.map((member) => {
-      return {
-        id: member.id,
-        email: member.email,
-        username: member.username,
-        emailVerified: member.emailVerified,
-        role: member.role,
-      };
-    }),
-    messages: chat.messages.map((message) => {
-      return {
-        id: message.id,
-        content: message.content,
-        sentTime: message.sentTime,
-        senderId: message.userId,
-      } as MessageResponseDto;
-    }),
-  };
+  return mapChatToDto(chat);
 };
 
-export { deletePrivateChat, createPrivateChat, getChatMembers, getChatById };
+const getUserChats = async (id: number): Promise<ChatResponseDto[]> => {
+  return (
+    await prisma.chat.findMany({
+      where: {
+        members: {
+          some: {
+            id: id,
+          },
+        },
+      },
+      include: {
+        members: {
+          select: {
+            id: true,
+            email: true,
+            username: true,
+            emailVerified: true,
+            role: true,
+          },
+        },
+        messages: true,
+      },
+    })
+  ).map((chat) => mapChatToDto(chat));
+};
+
+export {
+  deletePrivateChat,
+  createPrivateChat,
+  getChatMembers,
+  getChatById,
+  getUserChats,
+};

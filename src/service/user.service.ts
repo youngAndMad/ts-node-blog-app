@@ -18,7 +18,7 @@ import EmailRegisteredYetError from "../model/error/email-registered-yet.error";
 import InvalidCredentialsError from "../model/error/invalid-credentials.error";
 import NotFoundError from "../model/error/not-found.error";
 import { LoginResponse } from "../model/dto/login-response.dto";
-import { mapUserToDto } from "../provider/user.mapper";
+import { mapUserToDto } from "../provider/mapper/user.mapper";
 
 const userDtoFields = {
   id: true,

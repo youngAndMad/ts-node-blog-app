@@ -3,6 +3,7 @@ import {
   createPrivateChat,
   deletePrivateChat,
   getChatById,
+  getUserChats,
 } from "../service/chat.service";
 import { authTokenMiddleware } from "../middleware/auth.middleware";
 
@@ -28,7 +29,7 @@ chatRouter.get(
   "/",
   authTokenMiddleware,
   async (req: Request, res: Response) => {
-    res.json({ message: "hello" });
+    res.json(await getUserChats(req.user));
   }
 );
 
