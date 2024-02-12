@@ -16,10 +16,7 @@ const requestLoggerMiddleware = (
   const executionTime = endTime - startTime;
 
   log.info(
-    `Completed api request ${req.method} ${req.url} execution ${executionTime}ms`,
-    {
-      requestBody: req.body,
-    }
+    `Completed api request ${req.method} ${req.url} execution ${executionTime}ms`
   );
 };
 

@@ -11,8 +11,9 @@ import { verifyToken } from "./jwt";
 import { TokenType } from "../model/enum/token-type";
 import { findUser } from "../service/user.service";
 import { UserDto } from "../model/dto/user.dto";
-import log from "./logger";
+import { getLogger } from "./logger";
 
+const log = getLogger("socket");
 const app = express();
 
 const server = http.createServer(app);
@@ -46,7 +47,7 @@ io.on("connection", async (socket) => {
       });
 
       socket.on("disconnect", async () => {
-        console.log("user disconnected", socket.id);
+        console.log("user disconnected", user.id);
         setOffline(user.id);
         clearUserSocket(user.id);
         io.emit("getOnlineUsers", await getAllOnlineUsers());

@@ -37,11 +37,19 @@ async function main() {
 }
 
 main()
-  .then(async () => await checkBuckets())
+  .then(async () => {
+    log.info("successfully connected to minio");
+    await checkBuckets();
+  })
   .then(async () => {
     await redisClient.connect();
     log.info("successfully connected to redis");
   })
+  .then(async () => {
+    await prisma.$connect();
+    log.info("successfully connected to prisma");
+  })
+
   .then(() => {
     log.info(`[server]: Server is running at :${port}`);
   })

@@ -22,12 +22,14 @@ const uploadUserAvatar = async (
     await minioClient.removeObject(USER_PROFILE_IMAGE_BUCKET, user.avatar);
   }
 
-  await minioClient.putObject(USER_PROFILE_IMAGE_BUCKET, file.name, file.data);
+  const fileKey = `${user.id}/${file.name}`;
+
+  await minioClient.putObject(USER_PROFILE_IMAGE_BUCKET, fileKey, file.data);
 
   log.info(`uploaded new profile image by user with id ${userId}`);
   await prisma.user.update({
     data: {
-      avatar: file.name,
+      avatar: fileKey,
     },
     where: {
       id: userId,

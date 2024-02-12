@@ -13,6 +13,7 @@ import { registrationValidationRules } from "../model/dto/registration.dto";
 import { emailConfirmationValidationRules } from "../model/dto/confirm-email.dto";
 import { validate } from "../provider/validator";
 import { loginValidationRules } from "../model/dto/login.dto";
+import { adminMiddleware } from "../middleware/admin.middleware";
 
 let userRouter = express.Router();
 
@@ -76,9 +77,13 @@ userRouter.post("/refresh-token", async (req: Request, res: Response) => {
   res.json(await refreshToken(refreshTokenFromHeader!));
 });
 
-userRouter.get("/admin/all", async (req: Request, res: Response) => {
-  res.json(await getAllUsers());
-});
+userRouter.get(
+  "/admin/all",
+  adminMiddleware,
+  async (req: Request, res: Response) => {
+    res.json(await getAllUsers());
+  }
+);
 
 userRouter.patch("/:id", async (req: Request, res: Response) => {
   const id = +req.params.id;

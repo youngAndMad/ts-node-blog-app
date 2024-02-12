@@ -13,16 +13,16 @@ services:
     volumes:
       - minio_storage:/data
     command: server --console-address ":9001" /data
-  # postgres:
-  #   networks:
-  #     - node
-  #   image: postgres:15.1
-  #   ports:
-  #     - "5432:5432"
-  #   environment:
-  #     POSTGRES_USER: admin
-  #     POSTGRES_PASSWORD: password
-  #     POSTGRES_DB: node
+  postgres:
+    networks:
+      - node
+    image: postgres:15.1
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: node
   redis:
     image: redis
     container_name: redis_node
