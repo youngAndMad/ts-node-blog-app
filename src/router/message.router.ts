@@ -9,8 +9,6 @@ import { getChatMembers } from "../service/chat.service";
 import { getUserSocket } from "../service/user-socket.service";
 import { validate } from "../provider/validator";
 import { messageValidationRules } from "../model/dto/message.dto";
-import { MessageDto } from "../model/dto/message.dto";
-import { MessageResponseDto } from "../model/dto/message-response.dto";
 const messageRouter = express.Router();
 
 messageRouter.post("/", async (req: Request, res: Response) => {
@@ -44,7 +42,5 @@ messageRouter.put(":/id", async (req: Request, res: Response) => {
   await updateMessage(+req.query.id!, content);
   res.status(200);
 });
-
-
 
 export default messageRouter;
