@@ -42,10 +42,6 @@ main()
   })
   .then(async () => {
     await redisClient.connect();
-    let users = await prisma.user.findMany();
-    users.forEach((u) => {
-      redisClient.hDel("online-users", u.id.toString());
-    });
     log.info("successfully connected to redis");
   })
   .then(async () => {
