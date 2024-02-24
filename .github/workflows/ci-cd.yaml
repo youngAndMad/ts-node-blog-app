@@ -26,6 +26,7 @@ jobs:
       - name: Push Docker Image
         run: docker push daneker/ts-chat-app
   deploy-to-remote-server:
+    runs-on: ubuntu-latest
     steps:
       - name: Deploy to Production
         uses: appleboy/ssh-action@master
