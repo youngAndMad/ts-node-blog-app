@@ -18,17 +18,24 @@ const log = getLogger("backend");
 
 app.use(json());
 app.use(fileUpload());
-app.use(cors());
+app.use(
+  cors({
+    allowedHeaders: "*",
+    origin: "*",
+  })
+);
 app.use(requestLoggerMiddleware);
-app.use((err: BaseError, req: Request, res: Response, next: NextFunction) => {
-  log.error(`handled error ${err.message}`);
-  return res.status(err.statusCode).json(err);
-});
+
 app.use("/api/v1/user/", userRouter);
 app.use("/api/v1/chat/", chatRouter);
 app.use("/api/v1/file/", fileRouter);
 app.use("/api/v1/message/", messageRouter);
 const port = ENV.PORT;
+
+app.use((err: BaseError, req: Request, res: Response, next: NextFunction) => {
+  log.error(`handled error ${err.message}`);
+  return res.status(err.statusCode).json(err);
+});
 
 async function main() {
   server.listen(port);

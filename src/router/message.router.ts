@@ -21,8 +21,13 @@ messageRouter.post(
       res,
       async () => {
         const { userId, chatId, content } = req.body;
-
-        const savedMessage = await saveMessage({ userId, chatId, content });
+        const sentAt = new Date();
+        const savedMessage = await saveMessage({
+          userId,
+          chatId,
+          content,
+          sentAt,
+        });
 
         (await getChatMembers(savedMessage.chatId)).forEach(async (user) => {
           const socket = await getUserSocket(user.id);

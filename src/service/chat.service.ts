@@ -110,7 +110,11 @@ const getUserChats = async (id: number): Promise<ChatResponseDto[]> => {
             role: true,
           },
         },
-        messages: true,
+        messages: {
+          orderBy: {
+            sentTime: "desc",
+          },
+        },
       },
     })
   ).map((chat) => mapChatToDto(chat));
