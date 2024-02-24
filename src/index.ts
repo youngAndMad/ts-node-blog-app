@@ -31,7 +31,6 @@ app.use("/api/v1/message/", messageRouter);
 const port = ENV.PORT;
 
 async function main() {
-  console.table(ENV);
   server.listen(port);
 }
 
