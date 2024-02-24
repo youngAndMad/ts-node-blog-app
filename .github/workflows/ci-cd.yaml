@@ -39,10 +39,4 @@ jobs:
           port: 22
           script: |
             cd ${{ secrets.PROJECT_PATH }}
-            git fetch
-            echo "fetched changes from git"
-            git pull
-            echo "pulled changes from git"
-            npm i -legacy-peer-deps
-            echo "reinstalled node modules"
-            npm run dev
+            ./refresh_app.sh
