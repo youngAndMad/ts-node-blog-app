@@ -11,7 +11,7 @@ declare global {
   }
 }
 
-const log = getLogger("auth.niddleware");
+const log = getLogger("auth.middleware");
 
 export function authTokenMiddleware(
   req: Request,

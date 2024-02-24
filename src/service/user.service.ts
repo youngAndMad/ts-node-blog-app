@@ -29,7 +29,7 @@ const userDtoFields = {
   role: true,
 };
 
-const log = getLogger("user.service")
+const log = getLogger("user.service");
 
 const register = async (registrationDto: RegistrationDto): Promise<UserDto> => {
   const user = await prisma.user.findUnique({
@@ -131,6 +131,9 @@ const refreshToken = async (refreshToken: string): Promise<TokenDto> => {
 const getAllUsers = async (): Promise<UserDto[]> => {
   return prisma.user.findMany({
     select: userDtoFields,
+    orderBy: {
+      id: "asc",
+    },
   });
 };
 

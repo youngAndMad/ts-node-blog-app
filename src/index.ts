@@ -28,17 +28,15 @@ app.use("/api/v1/user/", userRouter);
 app.use("/api/v1/chat/", chatRouter);
 app.use("/api/v1/file/", fileRouter);
 app.use("/api/v1/message/", messageRouter);
-
 const port = ENV.PORT;
 
 async function main() {
-  console.table(ENV);
   server.listen(port);
 }
 
 main()
   .then(async () => {
-    log.info("successfully connected to minio");
+    log.info("successfully connected to object storage minio");
     await checkBuckets();
   })
   .then(async () => {
@@ -47,7 +45,7 @@ main()
   })
   .then(async () => {
     await prisma.$connect();
-    log.info("successfully connected to prisma");
+    log.info("successfully connected to postgresql");
   })
 
   .then(() => {
