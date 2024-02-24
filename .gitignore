@@ -1,3 +1,4 @@
 node_modules
 *.env
 minio_storage
+dist
