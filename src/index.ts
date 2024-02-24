@@ -14,7 +14,7 @@ import messageRouter from "./router/message.router";
 import { checkBuckets } from "./service/file.service";
 import redisClient from "./config/redis.config";
 
-const log = getLogger("app");
+const log = getLogger("backend");
 
 app.use(json());
 app.use(fileUpload());
@@ -31,6 +31,7 @@ app.use("/api/v1/message/", messageRouter);
 const port = ENV.PORT;
 
 async function main() {
+  console.table(ENV);
   server.listen(port);
 }
 
@@ -41,18 +42,19 @@ main()
   })
   .then(async () => {
     await redisClient.connect();
+    let users = await prisma.user.findMany();
+    users.forEach((u) => {
+      redisClient.hDel("online-users", u.id.toString());
+    });
     log.info("successfully connected to redis");
   })
   .then(async () => {
     await prisma.$connect();
     log.info("successfully connected to postgresql");
   })
-
   .then(() => {
     log.info(`[server]: Server is running at :${port}`);
   })
   .catch(async (e) => {
     log.error(e);
-    await prisma.$disconnect();
-    await redisClient.disconnect();
   });

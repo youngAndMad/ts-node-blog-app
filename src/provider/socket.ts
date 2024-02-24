@@ -39,21 +39,19 @@ io.on("connection", async (socket) => {
       await setUserSocket(user.id, socket.id);
 
       io.emit("getOnlineUsers", await getAllOnlineUsers());
-      socket.emit("greeting", `Hello, ${user.username}! Welcome to the chat.`);
 
       socket.on("newMessage", (message: any) => {
-        log.info("new message", message);
+        log.info(`new message  = ${message}`);
       });
 
       socket.on("disconnect", async () => {
         log.info("user disconnected", user.id);
         setOffline(user.id);
         clearUserSocket(user.id);
-        io.emit("getOnlineUsers", await getAllOnlineUsers());
       });
     })
     .catch((err) => {
-      log.error(err);
+      log.error("an error ", err);
       socket.emit("error", err);
       socket.disconnect();
     });
