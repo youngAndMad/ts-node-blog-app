@@ -6,10 +6,6 @@ const prisma = new PrismaClient({
       emit: "stdout",
       level: "error",
     },
-    {
-      emit: "stdout",
-      level: "warn",
-    },
   ],
 });
 
