@@ -48,4 +48,4 @@ jobs:
             npm i -legacy-peer-deps
             echo "reinstalled node modules"
             npm run build
-            npm start
+            npm run rebuild
