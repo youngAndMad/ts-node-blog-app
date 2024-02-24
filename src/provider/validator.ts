@@ -14,5 +14,5 @@ export async function validate(
   if (errors.isEmpty()) {
     return next();
   }
-  throw new DataValidationError(errors);
+  return next(new DataValidationError(errors));
 }

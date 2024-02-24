@@ -14,13 +14,14 @@ import { emailConfirmationValidationRules } from "../model/dto/confirm-email.dto
 import { validate } from "../provider/validator";
 import { loginValidationRules } from "../model/dto/login.dto";
 import { adminMiddleware } from "../middleware/admin.middleware";
+import asyncTryCatchMiddleware from "../middleware/handle-error.middleware";
 
 let userRouter = express.Router();
 
 userRouter.post(
   "/register",
   registrationValidationRules,
-  async (req: Request, res: Response) => {
+  asyncTryCatchMiddleware(async (req: Request, res: Response) => {
     await validate(
       req,
       res,
@@ -31,13 +32,13 @@ userRouter.post(
       },
       registrationValidationRules
     );
-  }
+  })
 );
 
 userRouter.post(
   "/confirm-email",
   emailConfirmationValidationRules,
-  async (req: Request, res: Response) => {
+  asyncTryCatchMiddleware(async (req: Request, res: Response) => {
     await validate(
       req,
       res,
@@ -48,13 +49,13 @@ userRouter.post(
       },
       emailConfirmationValidationRules
     );
-  }
+  })
 );
 
 userRouter.post(
   "/login",
   loginValidationRules,
-  async (req: Request, res: Response) => {
+  asyncTryCatchMiddleware(async (req: Request, res: Response) => {
     await validate(
       req,
       res,
@@ -65,41 +66,53 @@ userRouter.post(
       },
       loginValidationRules
     );
-  }
+  })
 );
 
-userRouter.post("/refresh-token", async (req: Request, res: Response) => {
-  const refreshTokenFromHeader = req.header("refresh-token");
+userRouter.post(
+  "/refresh-token",
+  asyncTryCatchMiddleware(async (req: Request, res: Response) => {
+    const refreshTokenFromHeader = req.header("refresh-token");
 
-  if (refreshTokenFromHeader === undefined) {
-    res.status(400).json({ error: "refresh token not provided" });
-  }
-  res.json(await refreshToken(refreshTokenFromHeader!));
-});
+    if (refreshTokenFromHeader === undefined) {
+      res.status(400).json({ error: "refresh token not provided" });
+    }
+    res.json(await refreshToken(refreshTokenFromHeader!));
+  })
+);
 
 userRouter.get(
   "/admin/all",
   adminMiddleware,
-  async (req: Request, res: Response) => {
+  asyncTryCatchMiddleware(async (req: Request, res: Response) => {
     res.json(await getAllUsers());
-  }
+  })
 );
 
-userRouter.patch("/:id", async (req: Request, res: Response) => {
-  const id = +req.params.id;
-  const username = req.query.username as string;
-  res.json(await editUsername(id, username));
-});
+userRouter.patch(
+  "/:id",
+  asyncTryCatchMiddleware(async (req: Request, res: Response) => {
+    const id = +req.params.id;
+    const username = req.query.username as string;
+    res.json(await editUsername(id, username));
+  })
+);
 
-userRouter.delete("/:id", async (req: Request, res: Response) => {
-  await deleteUser(+req.params.id);
-  res.status(204);
-});
+userRouter.delete(
+  "/:id",
+  asyncTryCatchMiddleware(async (req: Request, res: Response) => {
+    await deleteUser(+req.params.id);
+    res.status(204);
+  })
+);
 
-userRouter.get("/suggest", async (req: Request, res: Response) => {
-  console.log(+req.query.id!);
-  const users = await suggestUsers(req.query.query as string, +req.query.id!);
-  res.json(users);
-});
+userRouter.get(
+  "/suggest",
+  asyncTryCatchMiddleware(async (req: Request, res: Response) => {
+    console.log(+req.query.id!);
+    const users = await suggestUsers(req.query.query as string, +req.query.id!);
+    res.json(users);
+  })
+);
 
 export default userRouter;
