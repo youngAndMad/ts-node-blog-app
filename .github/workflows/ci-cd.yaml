@@ -5,29 +5,8 @@ on:
     branches: [master]
 
 jobs:
-  build-and-push-docker-image:
-    runs-on: ubuntu-latest
-    steps:
-      - name: checkout repository
-        uses: actions/checkout@v2
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20.10.0"
-      - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag daneker/ts-chat-app:latest
-      - name: Tag image
-        run: docker tag daneker/ts-chat-app daneker/ts-chat-app:latest
-      - name: Log in to Docker Hub
-        run: docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Push Docker Image
-        run: docker push daneker/ts-chat-app
   deploy-to-remote-server:
     runs-on: ubuntu-latest
-    needs: build-and-push-docker-image
     steps:
       - name: Deploy to Production
         uses: appleboy/ssh-action@master
