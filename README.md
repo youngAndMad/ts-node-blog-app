@@ -28,12 +28,12 @@ git clone https://github.com/youngAndMad/ts-node-chat-app
 npm install --legacy-peer-deps
 ```
 
-**4. Do database migrations **
+**4. Do database migrations**
 ```bash
 npx prisma migrate dev --name init
 ```
 
-**5. Run app **
+**5. Run app**
 ```bash
 npm run dev
 ```
