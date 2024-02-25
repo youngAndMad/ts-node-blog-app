@@ -18,9 +18,8 @@ const mapChatToDto = (chat: any): ChatResponseDto => {
       return {
         id: message.id,
         content: message.content,
-        sentTime: message.sentTime,
         senderId: message.userId,
-        sentAt: message.sentTime,
+        sentTime: message.sentTime,
       } as MessageResponseDto;
     }),
   };

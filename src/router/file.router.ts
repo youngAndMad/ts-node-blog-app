@@ -7,8 +7,7 @@ const fileRouter = express.Router();
 
 fileRouter.post(
   "/upload/profile-image/:userId",
-  fileUpload(),
-  asyncTryCatchMiddleware(async (req: Request, res: Response) => {
+  async (req: Request, res: Response) => {
     if (!req.files || Object.keys(req.files).length === 0) {
       return res.status(400).send("No files were uploaded.");
     }
@@ -17,7 +16,7 @@ fileRouter.post(
 
     const uploadedAvatar = await uploadUserAvatar(file, +req.params.userId);
     res.json(uploadedAvatar);
-  })
+  }
 );
 
 fileRouter.get(
