@@ -6,6 +6,7 @@ import { User } from "@prisma/client";
 import { UserDto } from "../model/dto/user.dto";
 import { ChatResponseDto } from "../model/dto/chat-response.dto";
 import { mapChatToDto } from "../provider/mapper/chat.mapper";
+import BaseError from "../model/error/base-error";
 
 const createPrivateChat = async (
   senderId: number,
@@ -16,6 +17,31 @@ const createPrivateChat = async (
 
   if (sender === null || receiver === null) {
     throw new InvalidPayloadError("error: sender or receiver is null");
+  }
+
+  let checkChat = await prisma.chat.findFirst({
+    where: {
+      AND: [
+        {
+          members: {
+            some: {
+              id: sender.id,
+            },
+          },
+        },
+        {
+          members: {
+            some: {
+              id: receiver.id,
+            },
+          },
+        },
+      ],
+    },
+  });
+
+  if (checkChat) {
+    throw new InvalidPayloadError("chat between users already exists");
   }
 
   const chat = await prisma.chat.create({
