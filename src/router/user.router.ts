@@ -15,6 +15,9 @@ import { validate } from "../provider/validator";
 import { loginValidationRules } from "../model/dto/login.dto";
 import { adminMiddleware } from "../middleware/admin.middleware";
 import asyncTryCatchMiddleware from "../middleware/handle-error.middleware";
+import { getAllOnlineUsers, setOffline } from "../service/user-status.service";
+import { clearUserSocket } from "../service/user-socket.service";
+import { io } from "../provider/socket";
 
 let userRouter = express.Router();
 
@@ -109,9 +112,21 @@ userRouter.delete(
 userRouter.get(
   "/suggest",
   asyncTryCatchMiddleware(async (req: Request, res: Response) => {
-    console.log(+req.query.id!);
     const users = await suggestUsers(req.query.query as string, +req.query.id!);
     res.json(users);
+  })
+);
+
+userRouter.delete(
+  "/clear-session/:id",
+  asyncTryCatchMiddleware(async (req: Request, res: Response) => {
+    const id = +req.params.id!;
+    await clearUserSocket(id);
+    await setOffline(id);
+
+    io.emit("getOnlineUsers", await getAllOnlineUsers());
+
+    res.status(204).end();
   })
 );
 

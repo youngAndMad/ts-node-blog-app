@@ -30,7 +30,7 @@ app.use("/api/v1/message/", messageRouter);
 const port = ENV.PORT;
 
 app.use((err: BaseError, req: Request, res: Response, next: NextFunction) => {
-  log.error(`handled error ${err} ${req.headers["content-type"]}`);
+  log.error(`handled error by global exception handler ${err} `);
   return res.status(err.statusCode).json({ err });
 });
 
