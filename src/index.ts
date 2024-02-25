@@ -20,12 +20,7 @@ const log = getLogger("backend");
 app.use(json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(fileUpload({ debug: true }));
-app.use(
-  cors({
-    allowedHeaders: "*",
-    origin: "*",
-  })
-);
+app.use(cors());
 app.use(requestLoggerMiddleware);
 
 app.use("/api/v1/user/", userRouter);
