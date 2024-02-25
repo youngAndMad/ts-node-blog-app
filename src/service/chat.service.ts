@@ -112,7 +112,7 @@ const getUserChats = async (id: number): Promise<ChatResponseDto[]> => {
         },
         messages: {
           orderBy: {
-            sentTime: "desc",
+            sentTime: "asc",
           },
         },
       },

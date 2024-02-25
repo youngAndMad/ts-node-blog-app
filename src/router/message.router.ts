@@ -34,7 +34,10 @@ messageRouter.post(
           io.to(socket!).emit("newMessage", savedMessage);
         });
 
-        res.status(201).end();
+        res
+          .status(201)
+          .json({ senderId: savedMessage.userId, ...savedMessage })
+          .end();
       },
       messageValidationRules
     );
