@@ -11,6 +11,7 @@
 - Winston for logging
 - Minio object storage
 - JWT tokens
+- Docker
 
 
 - ## Steps to Setup
