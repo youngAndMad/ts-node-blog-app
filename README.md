@@ -1,4 +1,4 @@
-# ts-node-chat-app
+# ts-node-chat-app(frontend repo: https://github.com/youngAndMad/ng-node-chat-app-front)
 
 ## Used technologies
 
